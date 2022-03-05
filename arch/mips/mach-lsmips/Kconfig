@@ -1,0 +1,80 @@
+menu "Loongson MIPS platforms"
+	depends on ARCH_LSMIPS
+
+config SYS_MALLOC_F_LEN
+	default 0x1000
+
+config SYS_SOC
+	default "ls1c300" if SOC_LS1C300
+
+config SYS_DCACHE_SIZE
+	default 32768
+
+config SYS_DCACHE_LINE_SIZE
+	default 32
+
+config SYS_ICACHE_SIZE
+	default 65536
+
+config SYS_ICACHE_LINE_SIZE
+	default 32
+
+config SYS_TEXT_BASE
+	default 0xbfc00000 if !SPL
+	default 0x80200000 if SPL
+
+config SPL_TEXT_BASE
+	default 0xbfc00000
+
+config SPL_PAYLOAD
+	default "u-boot-lzma.img" if SPL_LZMA
+
+config BUILD_TARGET
+	default "u-boot-with-spl.bin" if SPL
+
+choice
+	prompt "Loongson MIPS SoC select"
+
+config SOC_LS1C300
+	bool "LS1C300"
+	select MIPS_L1_CACHE_SHIFT_5
+	select PINCTRL_LS1C300
+	select SPL_SEPARATE_BSS if SPL
+	select SPL_INIT_STACK_WITHOUT_MALLOC_F if SPL
+	select SPL_LOADER_SUPPORT if SPL
+	select SPL_OF_CONTROL if SPL_DM
+	select SPL_SIMPLE_BUS if SPL_DM
+	select SPL_DM_SERIAL if SPL_DM
+	select SPL_CLK if SPL_DM && SPL_SERIAL_SUPPORT
+	select SPL_SYSRESET if SPL_DM
+	select SPL_OF_LIBFDT if SPL_OF_CONTROL
+	help
+	  This supports Loongson LS1C300
+
+
+
+endchoice
+
+choice
+	prompt "Board select"
+
+config BOARD_LS1C300
+	bool "Loongson LS1C300 RFB"
+	depends on SOC_LS1C300
+	help
+	  GARDENA smart Gateway boards have a MT7688 SoC with 128 MiB of RAM
+	  and 8 MiB of flash (SPI NOR) and additional SPI NAND storage.
+
+endchoice
+
+config SPL_UART2_SPIS_PINMUX
+	bool "Use alternative pinmux for UART2 in SPL stage"
+	depends on SPL_SERIAL_SUPPORT
+	default n
+	help
+	  Select this if the UART2 of your board is connected to GPIO 16/17
+	  (shared with SPIS) rather than the usual GPIO 20/21.
+
+source "board/loongson/ls1c300eval/Kconfig"
+
+endmenu

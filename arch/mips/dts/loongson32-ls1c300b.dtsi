@@ -1,0 +1,119 @@
+// SPDX-License-Identifier: GPL-2.0
+#include <dt-bindings/clock/ls1c300-clk.h>
+
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+	compatible = "loongson,ls1c300-soc";
+
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		cpu@0 {
+			device_type = "cpu";
+			reg = <0>;
+			compatible = "loongson,gs232", "mips,mips4Kc";
+			clocks = <&acc CLK_CPU>;
+		};
+	};
+
+	xtal: oscillator@0 {
+		compatible = "fixed-clock";
+		clock-frequency = <24000000>;
+		#clock-cells = <0>;
+	};
+
+	soc {
+		#address-cells = <1>;
+                #size-cells = <1>;
+                compatible = "simple-bus";
+                ranges;
+
+		// TODO: add more device.
+
+		acc: clock-controller@1fe78030 {
+			compatible = "loongson,ls1c300-clk";
+			clocks = <&xtal>;
+			#clock-cells = <1>;
+			reg = <0x1fe78030 0x8>, <0x1fe7c010 0x4>;
+			u-boot,dm-pre-reloc;
+		};
+
+		uart0: serial@1fe40000 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART0>;
+			reg = <0x1fe40000 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart1: serial@1fe44000 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART1>;
+			reg = <0x1fe44000 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart2: serial@bfe48000 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART2>;
+			reg = <0xbfe48000 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart3: serial@1fe4c000 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART3>;
+			reg = <0x1fe4c000 0x100>;
+			reg-shift = <0>;
+		};
+
+		wdt: watchdog@1fe5c060 {
+			compatible = "loongson,ls1c300-wdt";
+			clocks = <&acc CLK_SDRAM>;
+			reg = <0x1fe5c060 0x10>;
+		};
+
+		reset-controller {
+			compatible = "wdt-reboot";
+			wdt = <&wdt>;
+		};
+
+	};
+};
+
+
+
+// confreg: syscon@1fd00000 reg = <0x1fd00000 0x100>;
+// otg: @1fe00000 reg = <0x1fe00000 0x100>;
+// mac: ethernet@1fe10000 reg = <0x1fe10000 0x100>;
+// usb: usb-phy@1fe20000 reg = <0x1fe20000 0x100>;
+// apb: bus@1fe40000 reg = <0x1fe40000 0x100>;
+// spi0: spi@1fe80000 reg = <0x1fe80000 0x100>;
+// spi1: spi@1fec0000 reg = <0x1fec0000 0x100>;
+//
+//
+// uart0:  serial@1fe40000 reg = <0x1fe40000 0x100>;
+// uart1:  serial@1fe44000 reg = <0x1fe44000 0x100>;
+// uart2:  serial@1fe48000 reg = <0x1fe48000 0x100>;
+// uart3:  serial@1fe4c000 reg = <0x1fe4c000 0x100>;
+// uart4:  serial@1fe4c400 reg = <0x1fe4c400 0x100>;
+// uart5:  serial@1fe4c500 reg = <0x1fe4c500 0x100>;
+// uart6:  serial@1fe4c600 reg = <0x1fe4c600 0x100>;
+// uart7:  serial@1fe4c700 reg = <0x1fe4c700 0x100>;
+// uart8:  serial@1fe4c800 reg = <0x1fe4c800 0x100>;
+// uart9:  serial@1fe4c900 reg = <0x1fe4c900 0x100>;
+// uart10: serial@1fe4ca00 reg = <0x1fe4ca00 0x100>;
+// uart11: serial@1fe4cb00 reg = <0x1fe4cb00 0x100>;
+// can0:   can@1fe50000 reg = <0x1fe50000 0x100>;
+// can1:   can@1fe54000 reg = <0x1fe54000 0x100>;
+// i2c0:   i2c@1fe58000 reg = <0x1fe58000 0x100>;
+// pwm:    pwm@1fe5c000 reg = <0x1fe5c000 0x100>;
+// i2s:    audio-controller@1fe60000 reg = <0x1fe60000 0x100>;
+// rtc:    rtc@1fe64000 reg = <0x1fe64000 0x100>;
+// i2c1:   i2c@1fe68000 reg = <0x1fe68000 0x100>;
+// sdio:   xxx@1fe6c000 reg = <0x1fe6c000 0x100>;
+// i2c2:   i2c@1fe70000 reg = <0x1fe70000 0x100>;
+// adc:    adc@1fe74000 reg = <0x1fe74000 0x100>;
+// nand:   nand-controller@1fe78000 reg = <0x1fe78000 0x100>;
