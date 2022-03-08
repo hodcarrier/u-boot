@@ -71,7 +71,7 @@
 
 		wdt: watchdog@1fe5c060 {
 			compatible = "loongson,ls1c300-wdt";
-			clocks = <&acc CLK_SDRAM>;
+			clocks = <&acc CLK_WDT>;
 			reg = <0x1fe5c060 0x10>;
 		};
 

@@ -8,7 +8,7 @@
 #define __DT_BINDINGS_LS1C300_CLK_H__
 
 /* Base clocks */
-#define CLK_XTAL		0
+#define CLK_XTAL		8
 #define CLK_PLL			1
 #define CLK_CPU			2
 #define CLK_SDRAM               3
@@ -42,5 +42,6 @@
 #define CLK_ADC                 CLK_SDRAM
 #define CLK_NAND                CLK_SDRAM
 
+#define CLK_WDT			(CLK_SDRAM)
 
 #endif /* __DT_BINDINGS_LS1C300_CLK_H__ */
