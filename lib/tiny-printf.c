@@ -229,7 +229,7 @@ static int _vprintf(struct printf_info *info, const char *fmt, va_list va)
 					ch = *fmt++;
 				}
 			}
-			if (ch == 'l') {
+			if (ch == 'l' || ch == 'z') {
 				ch = *(fmt++);
 				islong = true;
 			}
