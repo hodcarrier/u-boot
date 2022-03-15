@@ -92,7 +92,9 @@ static int mtk_wdt_probe(struct udevice *dev)
 
 	if (clk_get_by_index(dev, 0, &cl) == 0) {
 		priv->clock = clk_get_rate(&cl);
-	}else{
+	}
+
+	if( priv->clock < 33000000 || priv->clock > 266000000 ) {
 		/* assume 67MHz by default */
 		priv->clock = 67108864;
 	}
