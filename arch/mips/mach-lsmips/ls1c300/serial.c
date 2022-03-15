@@ -19,6 +19,9 @@
 
 void lsmips_spl_serial_init(void)
 {
+	unsigned long __iomem *p = (void *)(0xbfd011c4+0x10);
+	p[0] |= 0x30;
+
 	return ;
 #ifdef CONFIG_SPL_SERIAL_SUPPORT
 	void __iomem *base = ioremap_nocache(SYSCTL_BASE, SYSCTL_SIZE);
