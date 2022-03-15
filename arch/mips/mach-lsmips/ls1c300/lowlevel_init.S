@@ -57,17 +57,20 @@ END(ls1c300_pll_init_264mhz)
 
 /* SPI: Dual IO@33MHz */
 LEAF(ls1c300_spi_init)
+#ifndef CONFIG_SKIP_LOWLEVEL_INIT
 	li	t0, 0xbfe80000
 	li	t1, 0x07
 	li	t2, 0x05
 	sb	t1, 0x4(t0)
 	sb	t1, 0x6(t0)
+#endif
 	jr	ra
 	  nop
 END(ls1c300_spi_init)
 
 /*	PLL: 264MHz	CPU: 132MHz	SDRAM: 66MHz	*/
 LEAF(ls1c300_pll_init)
+#ifndef CONFIG_SKIP_LOWLEVEL_INIT
 	li	t0, 0xbfe78030
 	li	t2, 555844098
 	sw	t2,	4 (t0)
@@ -77,7 +80,8 @@ LEAF(ls1c300_pll_init)
 
 	ori	t2, 1
 	sw	t2, 4 (t0)
-
+#endif
+/* TODO: recalc rate to v0 */
 	li	v0, 132000000
 	jr	ra
 	  nop
