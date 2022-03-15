@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * Copyright (C) 2019 MediaTek Inc. All Rights Reserved.
  *
- * Author: Gao Weijie <weijie.gao@mediatek.com>
+ * reference code:
+ * 1. drivers/clk/mtmips/clk-mt7628.c
+ * 2. drivers/clk/clk_octeon.c
+ * 3. drivers/clk/microchip/mpfs_clk.c
  *
- * base on: drivers/clk/mtmips/clk-mt7628.c
  * Copyright (C) 2020-2022 Du Huanpeng <dhu@hodcarrier.org>
  */
 
@@ -39,20 +40,6 @@
 #define	CPU_THROT	GENMASK(3,0)
 
 
-#define CLKCFG1_REG 0
-
-struct ls1c300_clk_priv {
-	void __iomem *base;
-	int xtal_clk;
-	int pll_clk;
-	int cpu_clk;
-	union {
-		int sdram_clk;
-		int apb_clk;
-	};
-};
-
-
 const struct clk_div_table sdram_div[] = {
 	{.val = 0, .div = 2},
 	{.val = 1, .div = 4},
@@ -60,52 +47,36 @@ const struct clk_div_table sdram_div[] = {
 	{.val = 3, .div = 3},
 };
 
-
 static ulong ls1c300_clk_get_rate(struct clk *clk)
 {
-	struct ls1c300_clk_priv *priv = dev_get_priv(clk->dev);
-	ulong ret;
+	struct clk *c;
+	ulong rate;
+	int err;
 
+	err = clk_get_by_id(clk->id, &c);
+	if (err)
+		return err;
 
-
-	switch (clk->id) {
-	case CLK_XTAL:
-		ret = priv->xtal_clk;
-		break;
-	case CLK_CPU:
-		ret = priv->cpu_clk;
-		break;
-	case CLK_SDRAM:
-		ret = priv->sdram_clk;
-		break;
-	default:
-		ret = 0;
-	}
-
-	return ret;
+	rate = clk_get_rate(c);
+	return rate;
 }
+
+int ls1c300_set_parent(struct clk *clk, struct clk *parent)
+{
+	printf("CLK: %s\n", __func__);
+	return 0;
+}
+
 
 static int ls1c300_clk_enable(struct clk *clk)
 {
-	struct ls1c300_clk_priv *priv = dev_get_priv(clk->dev);
-
-	if (clk->id > 31)
-		return -1;
-
-	setbits_32(priv->base + CLKCFG1_REG, BIT(clk->id));
-
+	printf("%s id:[%ld]\n", __func__, clk->id);
 	return 0;
 }
 
 static int ls1c300_clk_disable(struct clk *clk)
 {
-	struct ls1c300_clk_priv *priv = dev_get_priv(clk->dev);
-
-	if (clk->id > 31)
-		return -1;
-
-	clrbits_32(priv->base + CLKCFG1_REG, BIT(clk->id));
-
+	printf("%s id:[%ld]\n", __func__, clk->id);
 	return 0;
 }
 
@@ -116,32 +87,48 @@ const struct clk_ops ls1c300_clk_ops = {
 };
 
 
-// Freq_PLL = XIN *(M_PLL + FRAC_N)/4
 static int ls1c300_clk_probe(struct udevice *dev)
 {
-	struct ls1c300_clk_priv *priv = dev_get_priv(dev);
+	void __iomem *base;
 	void __iomem *cpu_throt;
 
+	struct clk *cl, clk;
+
+	int ret;
+	const char *parent_name;
+	unsigned int mult;
 	unsigned int pll, div;
 
-	priv->base = (void *)dev_remap_addr_index(dev, 0);
+	base = (void *)dev_remap_addr_index(dev, 0);
 #define START_FREQ	0
 #define CLK_DIV_PARAM	4
 	cpu_throt  = (void *)dev_remap_addr_index(dev, 1);
 
-	pll = readl(priv->base + START_FREQ);
-	div = readl(priv->base + CLK_DIV_PARAM);
-
+	debug("     base: %p\n", base);
+	debug("cpu_throt: %p\n", cpu_throt);
+	pll = readl(base + START_FREQ);
+	div = readl(base + CLK_DIV_PARAM);
 	debug("   START_FREQ: [%08x]\n", pll);
 	debug("CLK_DIV_PARAM: [%08x]\n", div);
 
-	priv->pll_clk = (pll >> 8) & 255;
+	ret = clk_get_by_index(dev, 0, &clk);
+	if(ret)
+		return ret;
 
-	priv->xtal_clk  =  24000000;
-	priv->pll_clk  *= priv->xtal_clk / 4;
+	ret = clk_get_rate(&clk);
 
-	priv->cpu_clk   = priv->pll_clk / 2;
-	priv->sdram_clk = priv->cpu_clk / 2;
+	parent_name = clk.dev->name;
+
+	mult = (pll >> 8) % 256 + (pll >> 16) % 256;
+//	readl(cpu_throt) & 15;
+
+	cl = clk_register_fixed_factor(NULL, "pll", parent_name, 0, mult, 4);
+	clk_dm(CLK_PLL, cl);
+	cl = clk_register_fixed_factor(NULL, "cpu", "pll", 0, 1, 2);
+	clk_dm(CLK_CPU, cl);
+	cl = clk_register_fixed_factor(NULL, "sdram", "cpu", 0, 1, 2);
+	clk_dm(CLK_SDRAM, cl);
+
 	return 0;
 }
 
@@ -155,6 +142,6 @@ U_BOOT_DRIVER(ls1c300_clk) = {
 	.id = UCLASS_CLK,
 	.of_match = ls1c300_clk_ids,
 	.probe = ls1c300_clk_probe,
-	.priv_auto = sizeof(struct ls1c300_clk_priv),
+	.priv_auto = sizeof(struct clk),
 	.ops = &ls1c300_clk_ops,
 };
