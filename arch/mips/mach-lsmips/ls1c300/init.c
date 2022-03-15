@@ -22,33 +22,35 @@ DECLARE_GLOBAL_DATA_PTR;
 
 int print_cpuinfo(void)
 {
-	struct udevice *clkdev;
-	ulong cpu_clk, sdram_clk, xtal_clk;
+	struct udevice *udev;
 	struct clk clk;
 	int ret;
+	ulong xtal;
+	char buf[SZ_32];
 
-	printf("CPU: Loongson ls1c300b ver: xxx\n");
-	printf("Boot: SDRAM , SPI-NOR xx-Byte Addr, CPU clock from PLL\n");
+	printf("CPU: Loongson ls1c300b\n");
 
-	ret = uclass_get_device_by_driver(UCLASS_CLK, DM_DRIVER_GET(ls1c300_clk), &clkdev);
+	ret = uclass_get_device_by_driver(UCLASS_CLK, DM_DRIVER_GET(ls1c300_clk), &udev);
 
 	if (ret) {
-		return ret;
+		printf("error: clock driver not found.\n");
+		return 0;
 	}
 
-	clk.dev = clkdev;
+	clk.dev = udev;
 
 	clk.id = CLK_XTAL;
-	xtal_clk = clk_get_rate(&clk);
+	xtal = clk_get_rate(&clk);
 
 	clk.id = CLK_CPU;
-	cpu_clk = clk_get_rate(&clk);
+	gd->cpu_clk = clk_get_rate(&clk);
 
 	clk.id = CLK_SDRAM;
-	sdram_clk = clk_get_rate(&clk);
+	gd->mem_clk = clk_get_rate(&clk);
 
-	printf("Clock: CPU: %luMHz, SDRAM: %luMHz, XTAL: %luMHz\n",
-	       cpu_clk / 1000000, sdram_clk / 1000000, xtal_clk / 1000000);
+	printf("Clock: CPU: %sMHz, ", strmhz(buf, gd->cpu_clk));
+	printf("SDRAM: %sMHz, ", strmhz(buf, gd->mem_clk));
+	printf("XTAL: %sMHz\n", strmhz(buf, xtal));
 
 	return 0;
 }
