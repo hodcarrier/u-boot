@@ -60,13 +60,19 @@ choice
 	prompt "Board select"
 
 config BOARD_LS1C300
-	bool "Loongson LS1C300 RFB"
+	bool "Loongson LS1C300 Eval"
 	depends on SOC_LS1C300
 	help
 	  GARDENA smart Gateway boards have a MT7688 SoC with 128 MiB of RAM
 	  and 8 MiB of flash (SPI NOR) and additional SPI NAND storage.
 
 endchoice
+
+config CONS_PIN_SELECT
+	int "pin group used in uart"
+	default 0
+	help
+	  Select pin group connected to UART for your board.
 
 config SPL_UART2_SPIS_PINMUX
 	bool "Use alternative pinmux for UART2 in SPL stage"
