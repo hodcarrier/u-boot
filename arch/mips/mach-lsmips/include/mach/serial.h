@@ -11,5 +11,6 @@
 #define __LSMIPS_SERIAL_H_
 
 void lsmips_spl_serial_init(void);
+int gpio_set_alternate(int gpio, int func);
 
 #endif /* __LSMIPS_SERIAL_H_ */

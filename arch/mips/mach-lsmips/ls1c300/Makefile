@@ -2,4 +2,5 @@
 
 obj-y += lowlevel_init.o
 obj-y += init.o
+obj-y += gpio.o
 obj-$(CONFIG_SPL_BUILD) += serial.o
