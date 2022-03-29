@@ -1,0 +1,27 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Copyright (C) 2022 Du Huanpeng <dhu@hodcarrier.org>
+ */
+
+/dts-v1/;
+
+#include "loongson32-ls1c300b.dtsi"
+
+/ {
+	compatible = "lsmips,ls1c300-soc";
+	model = "ls1c300-eval";
+
+	aliases {
+		console = &uart2;
+	};
+
+	chosen {
+		bootargs = "console=ttyS0,115200";
+		stdout-path = &uart2;
+	};
+};
+
+&uart2 {
+	status = "okay";
+};
+

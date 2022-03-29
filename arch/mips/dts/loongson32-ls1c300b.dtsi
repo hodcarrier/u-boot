@@ -1,0 +1,138 @@
+// SPDX-License-Identifier: GPL-2.0
+#include <dt-bindings/clock/ls1c300-clk.h>
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+	compatible = "loongson,ls1c300-soc";
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		cpu@0 {
+			device_type = "cpu";
+			reg = <0>;
+			compatible = "loongson,gs232", "mips,mips4Kc";
+			clocks = <&acc CLK_CPU>;
+		};
+	};
+
+	xtal: oscillator@0 {
+		compatible = "fixed-clock";
+		clock-frequency = <24000000>;
+		#clock-cells = <0>;
+	};
+
+	soc {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "simple-bus";
+		ranges;
+
+		// TODO: add more device.
+
+		acc: clock-controller@1fe78030 {
+			compatible = "loongson,ls1c300-clk";
+			clocks = <&xtal>;
+			#clock-cells = <1>;
+			reg = <0x1fe78030 0x8>, <0x1fe7c010 0x4>;
+			u-boot,dm-pre-reloc;
+		};
+
+		uart0: serial@1fe40000 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART0>;
+			reg = <0x1fe40000 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart1: serial@1fe44000 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART1>;
+			reg = <0x1fe44000 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart2: serial@bfe48000 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART2>;
+			reg = <0xbfe48000 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart3: serial@1fe4c000 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART3>;
+			reg = <0x1fe4c000 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart4:  serial@1fe4c400 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART4>;
+			reg = <0x1fe4c400 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart5:  serial@1fe4c500 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART5>;
+			reg = <0x1fe4c500 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart6:  serial@1fe4c600 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART6>;
+			reg = <0x1fe4c600 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart7:  serial@1fe4c700 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART7>;
+			reg = <0x1fe4c700 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart8:  serial@1fe4c800 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART8>;
+			reg = <0x1fe4c800 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart9:  serial@1fe4c900 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART9>;
+			reg = <0x1fe4c900 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart10: serial@1fe4ca00 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART10>;
+			reg = <0x1fe4ca00 0x100>;
+			reg-shift = <0>;
+		};
+
+		uart11: serial@1fe4cb00 {
+			compatible = "ns16550a";
+			clocks = <&acc CLK_UART11>;
+			reg = <0x1fe4cb00 0x100>;
+			reg-shift = <0>;
+		};
+
+		wdt: watchdog@1fe5c060 {
+			compatible = "loongson,ls1c300-wdt";
+			clocks = <&acc CLK_WDT>;
+			reg = <0x1fe5c060 0x10>;
+		};
+
+		reset-controller {
+			compatible = "wdt-reboot";
+			wdt = <&wdt>;
+		};
+
+	};
+};

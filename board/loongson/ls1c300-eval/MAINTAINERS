@@ -1,0 +1,7 @@
+LS1C300_EVAL BOARD
+M:	Du Huanpeng<dhu@hodcarrier.org>
+S:	Maintained
+F:	board/loongson/ls1c300-eval
+F:	include/configs/ls1c300.h
+F:	configs/ls1c300_defconfig
+F:	arch/mips/dts/ls1c300-eval.dts
