@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Copyright (C) 2022 Du Huanpeng <dhu@hodcarrier.org>
+ */
+
+/dts-v1/;
+
+#include "loongson32-ls1c300b.dtsi"
+
+/ {
+	compatible = "lsmips,ls1c300-soc";
+	model = "ls1c300-eval";
+
+	aliases {
+		serial0 = &uart2;
+	};
+
+	memory@80000000 {
+		device_type = "memory";
+		reg = <0x80000000 0x4000000>;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+};
+
+&uart2 {
+	status = "okay";
+};
+

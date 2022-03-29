@@ -1,0 +1,12 @@
+if BOARD_LS1C300
+
+config SYS_BOARD
+	default "ls1c300-eval"
+
+config SYS_VENDOR
+	default "loongson"
+
+config SYS_CONFIG_NAME
+	default "ls1c300"
+
+endif
