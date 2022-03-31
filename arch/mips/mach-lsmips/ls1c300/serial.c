@@ -7,11 +7,8 @@
  * Copyright (C) 2020-2022 Du Huanpeng <dhu@hodcarrier.org>
  */
 
-#include <common.h>
-#include <asm/io.h>
 #include <mach/serial.h>
 #include <linux/kernel.h>
-#include "ls1c300.h"
 
 struct uart_pin_config {
 	char port;
