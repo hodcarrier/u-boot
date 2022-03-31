@@ -15,7 +15,6 @@
 #include <dt-bindings/clock/ls1c300-clk.h>
 #include <linux/io.h>
 #include <linux/sizes.h>
-#include "ls1c300.h"
 
 DECLARE_GLOBAL_DATA_PTR;
 
