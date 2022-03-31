@@ -14,15 +14,14 @@
 #include <hang.h>
 #include <wdt.h>
 #include <asm/io.h>
-#include <linux/bitops.h>
 #include <clk.h>
 
-#define WDT_EN		(priv->base + 0)
-#define WDT_TIMER	(priv->base + 4)
-#define WDT_SET		(priv->base + 8)
 
 struct lsmips_wdt_priv {
 	void __iomem *base;
+#define WDT_EN		0
+#define WDT_TIMER	4
+#define WDT_SET		8
 	ulong clock;
 	unsigned long timeout;
 };
@@ -31,8 +30,8 @@ static int lsmips_wdt_reset(struct udevice *dev)
 {
 	struct lsmips_wdt_priv *priv = dev_get_priv(dev);
 
-	writel(priv->timeout, WDT_TIMER);
-	writel(1, WDT_SET);
+	writel(priv->timeout, priv->base + WDT_TIMER);
+	writel(1, priv->base + WDT_SET);
 
 	return 0;
 }
@@ -41,7 +40,7 @@ static int lsmips_wdt_stop(struct udevice *dev)
 {
 	struct lsmips_wdt_priv *priv = dev_get_priv(dev);
 
-	writel(0, WDT_EN);
+	writel(0, priv->base + WDT_EN);
 	return 0;
 }
 
@@ -49,9 +48,9 @@ static int lsmips_wdt_expire_now(struct udevice *dev, ulong flags)
 {
 	struct lsmips_wdt_priv *priv = dev_get_priv(dev);
 
-	writel(1, WDT_EN);
-	writel(1, WDT_TIMER);
-	writel(1, WDT_SET);
+	writel(1, priv->base + WDT_EN);
+	writel(1, priv->base + WDT_TIMER);
+	writel(1, priv->base + WDT_SET);
 
 	hang();
 	return 0;
@@ -71,9 +70,9 @@ static int lsmips_wdt_start(struct udevice *dev, u64 timeout_ms, ulong flags)
 
 	debug("WDT: reload  = %08x\n", timeout);
 
-	writel(1, WDT_EN);
-	writel(timeout, WDT_TIMER);
-	writel(1, WDT_SET);
+	writel(1, priv->base + WDT_EN);
+	writel(timeout, priv->base + WDT_TIMER);
+	writel(1, priv->base + WDT_SET);
 
 	priv->timeout = timeout;
 
@@ -92,14 +91,20 @@ static int lsmips_wdt_probe(struct udevice *dev)
 	if (clk_get_by_index(dev, 0, &cl) == 0)
 		priv->clock = clk_get_rate(&cl);
 
-	if (priv->clock < 33000000 || priv->clock > 150000000) {
-		/* assume 67MHz by default */
+	if (priv->clock < 45000000 || priv->clock > 133000000) {
+		/*
+		 * according to datasheet, the SDRAM works at the range frequency of 45~133MHz,
+		 * the watchdog's clock is the same with the SDRAM, see page 32.
+		 * so, if we got a clock out of this range,
+		 * probably the clock is wrong or working without SDRAM.
+		 * assign a default value 1^26 in this case.
+		 */
 		priv->clock = 67108864;
 	}
 
 	debug("WDT: clock = %ld\n", priv->clock);
 
-	writel(0, WDT_EN);
+	writel(0, priv->base + WDT_EN);
 	return 0;
 }
 
