@@ -12,12 +12,11 @@
 	model = "ls1c300-eval";
 
 	aliases {
-		console = &uart2;
+		serial0 = &uart2;
 	};
 
 	chosen {
-		bootargs = "console=ttyS0,115200";
-		stdout-path = &uart2;
+		stdout-path = "serial0:115200n8";
 	};
 };
 
