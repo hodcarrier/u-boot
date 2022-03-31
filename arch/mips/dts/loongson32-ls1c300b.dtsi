@@ -40,7 +40,7 @@
 		};
 
 		uart0: serial@1fe40000 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART0>;
 			reg = <0x1fe40000 0x100>;
 			reg-shift = <0>;
@@ -49,7 +49,7 @@
 		};
 
 		uart1: serial@1fe44000 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART1>;
 			reg = <0x1fe44000 0x100>;
 			reg-shift = <0>;
@@ -58,7 +58,7 @@
 		};
 
 		uart2: serial@1fe48000 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART2>;
 			reg = <0x1fe48000 0x100>;
 			reg-shift = <0>;
@@ -67,7 +67,7 @@
 		};
 
 		uart3: serial@1fe4c000 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART3>;
 			reg = <0x1fe4c000 0x100>;
 			reg-shift = <0>;
@@ -76,7 +76,7 @@
 		};
 
 		uart4:  serial@1fe4c400 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART4>;
 			reg = <0x1fe4c400 0x100>;
 			reg-shift = <0>;
@@ -85,7 +85,7 @@
 		};
 
 		uart5:  serial@1fe4c500 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART5>;
 			reg = <0x1fe4c500 0x100>;
 			reg-shift = <0>;
@@ -94,7 +94,7 @@
 		};
 
 		uart6:  serial@1fe4c600 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART6>;
 			reg = <0x1fe4c600 0x100>;
 			reg-shift = <0>;
@@ -103,7 +103,7 @@
 		};
 
 		uart7:  serial@1fe4c700 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART7>;
 			reg = <0x1fe4c700 0x100>;
 			reg-shift = <0>;
@@ -112,7 +112,7 @@
 		};
 
 		uart8:  serial@1fe4c800 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART8>;
 			reg = <0x1fe4c800 0x100>;
 			reg-shift = <0>;
@@ -121,7 +121,7 @@
 		};
 
 		uart9:  serial@1fe4c900 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART9>;
 			reg = <0x1fe4c900 0x100>;
 			reg-shift = <0>;
@@ -130,7 +130,7 @@
 		};
 
 		uart10: serial@1fe4ca00 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART10>;
 			reg = <0x1fe4ca00 0x100>;
 			reg-shift = <0>;
@@ -139,7 +139,7 @@
 		};
 
 		uart11: serial@1fe4cb00 {
-			compatible = "ns16550a";
+			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_UART11>;
 			reg = <0x1fe4cb00 0x100>;
 			reg-shift = <0>;
