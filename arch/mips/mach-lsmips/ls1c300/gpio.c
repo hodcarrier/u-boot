@@ -4,9 +4,7 @@
  */
 
 #include <linux/errno.h>
-#include <linux/bitops.h>
 #include <asm/bitops.h>
-#include <asm/io.h>
 
 #define CBUS_FIRST0	0xbfd011c0
 #define CBUS_SECOND0	0xbfd011d0
@@ -32,6 +30,14 @@
 #define CBUS_FOURTHT3	0xbfd011fc
 #define CBUS_FIFTHT3	0xbfd0120c
 
+/*
+ * pinmux for debug uart and spl only, for others, please
+ * use a pinctrl driver and device-tree for pin muxing.
+ *
+ * @gpio: gpio number
+ * @func: alternate function 1 to 5, 0 for GPIO.
+ */
+
 int gpio_set_alternate(int gpio, int func)
 {
 	volatile void __iomem *addr;
@@ -39,7 +45,7 @@ int gpio_set_alternate(int gpio, int func)
 
 	if (gpio < 0 || gpio > 104)
 		return -ENODEV;
-	if (func < 0)
+	if (func < 0 || func > 5)
 		return -EINVAL;
 
 	if (func) {
