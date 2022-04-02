@@ -92,10 +92,10 @@ void lsmips_spl_serial_init(void)
 	int pin_rx, pin_tx;
 	int afunc;
 
-	if (CONFIG_CONS_PIN_SELECT < ARRAY_SIZE(con)) {
-		pin_rx = con[CONFIG_CONS_PIN_SELECT].rx;
-		pin_tx = con[CONFIG_CONS_PIN_SELECT].tx;
-		afunc = con[CONFIG_CONS_PIN_SELECT].af;
+	if (CONFIG_CONS_PIN < ARRAY_SIZE(con)) {
+		pin_rx = con[CONFIG_CONS_PIN].rx;
+		pin_tx = con[CONFIG_CONS_PIN].tx;
+		afunc = con[CONFIG_CONS_PIN].af;
 	} else {
 		pin_rx = UART2_RX;
 		pin_tx = UART2_TX;
