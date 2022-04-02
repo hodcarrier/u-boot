@@ -17,47 +17,69 @@
 #include <linux/sizes.h>
 
 /* PLL */
-#define NAND_BASE	0xbfe78000
-#define START_FREQ	0xbfe78030
-#define CLK_DIV_PARAM	0xbfe78034
+#define NAND_BASE	0xbfe70000
+#define START_FREQ	0x8030
+#define CLK_DIV_PARAM	0x8034
+#define CPU_THROT	0xc010
+#define CPU_SEL		0x1
+
+#define CFG_START_FREQ		2147494924
+#define CFG_CLK_DIV_PARAM	555844098
+#define CFG_CPU_THROT		15
 
 /* SPI */
 #define SPI0_BASE	0xbfe80000
 
+#define SPCR		0
+#define SPSR		1
+#define TxFIFO		2
+#define RxFIFO		2
+#define SPER		3
+#define SFC_PARAM	4
+#define SFC_SOFTCS	5
+#define SFC_TIMING	6
+
 /* SDRAM */
-#define	SD_CONFIG	0xbfd00000
-#define	SD_CONFIGL	0xbfd00410
-#define	SD_CONFIGH	0xbfd00414
+#define SD_CONFIG	0xbfd00000
+#define SD_CONFIGHI	0x414
+#define SD_CONFIGLO	0x410
+#define CONFIG_VALID	0x200
+
+#define CFG_SDCONFIGHI	0x00000028
+#define CFG_SDCONFIGLO	0x028A924A
 
 	.set noreorder
 
 /*	PLL: 264MHz	CPU: 132MHz	SDRAM: 66MHz	*/
 LEAF(ls1c300_pll_init)
-#ifndef CONFIG_SKIP_LOWLEVEL_INIT
+#if !CONFIG_IS_ENABLED(SKIP_LOWLEVEL_INIT)
 	li	t0, NAND_BASE
-	li	t2, 555844098
-	sw	t2, 0x34 (t0)
+	li	t1, CFG_START_FREQ
+	li	t2, CFG_CLK_DIV_PARAM
+	li	t3, CFG_CPU_THROT
 
-	li	t1, 2147494924
-	sw	t1, 0x30 (t0)
-
-	ori	t2, 1
-	sw	t2, 0x34 (t0)
-#endif
-/* TODO: recalc rate to v0 */
-	li	v0, 132000000
-	jr	ra
+	sw	t3, CPU_THROT (t0)
+	sw	t2, CLK_DIV_PARAM (t0)
+	sw	t1, START_FREQ (t0)
 	  nop
+
+	ori	t2, CPU_SEL
+	sw	t2, CLK_DIV_PARAM (t0)
+
+#endif
+	li	v0, 264000000
+	jr	ra
+	nop
 END(ls1c300_pll_init)
 
 /* SPI: Dual IO@33MHz */
 LEAF(ls1c300_spi_init)
-#ifndef CONFIG_SKIP_LOWLEVEL_INIT
+#if !CONFIG_IS_ENABLED(SKIP_LOWLEVEL_INIT)
 	li	t0, SPI0_BASE
 	li	t1, 0x07
 	li	t2, 0x05
-	sb	t1, 0x4(t0)
-	sb	t1, 0x6(t0)
+	sb	t1, SFC_PARAM (t0)
+	sb	t2, SFC_TIMING (t0)
 #endif
 	jr	ra
 	  nop
@@ -68,36 +90,28 @@ END(ls1c300_spi_init)
 // Organization | Row Address | Column Address
 // 32Mx16       | A0~A12      | A0-A9
 
-// 128Mx4       | A0~A12      | A0-A9, A11, A12
-// 64Mx8        | A0~A12      | A0-A9, A11
-// 32Mx16       | A0~A12      | A0-A9
-
 LEAF(ls1c300_sdram_init)
-#ifndef CONFIG_SKIP_LOWLEVEL_INIT
+#if !CONFIG_IS_ENABLED(SKIP_LOWLEVEL_INIT)
 	li	t0, SD_CONFIG
-	li	t1, 0x028A924A
-	li	t2, 0x00000028
-sdram_cfg:
-	sw	t1, 0x410(t0)
-	sw	t2, 0x414(t0)
+	li	t1, CFG_SDCONFIGLO
+	li	t2, CFG_SDCONFIGHI
+
+	sw	t1, SD_CONFIGLO (t0)
+	sw	t2, SD_CONFIGHI (t0)
 	nop
-	sw	t1, 0x410(t0)
-	sw	t2, 0x414(t0)
-	ori	t2, 0x200
-	sw	t1, 0x410(t0)
-	sw	t2, 0x414(t0)
-#endif /* CONFIG_SKIP_LOWLEVEL_INIT */
+
+	sw	t1, SD_CONFIGLO (t0)
+	sw	t2, SD_CONFIGHI (t0)
+	nop
+
+	ori	t2, CONFIG_VALID
+	sw	t1, SD_CONFIGLO (t0)
+	sw	t2, SD_CONFIGHI (t0)
+#endif
 	li	v0, SZ_64M
 	jr	ra
 	 nop
 END(ls1c300_sdram_init)
-
-
-/*
- *	SDRAM@132MHz, CPU@297MHz, SPI@33MHz
- *	SDRAM@100MHz, CPU@300MHz, SPI@50MHz
- *	SDRAM@66MHz, CPU@132MHz, SPI@33MHz  <--
- */
 
 NESTED(lowlevel_init, 0, ra)
 	/* Save ra and do real lowlevel initialization */
