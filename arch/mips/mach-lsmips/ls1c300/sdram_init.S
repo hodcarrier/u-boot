@@ -50,7 +50,7 @@
 	((b<<SD_BIT)|(c<<SD_CSIZE)|(r<<SD_RSIZE))
 
 /* recommended values by ls1c300 user manual,
- * tweat to fit your real project.
+ * tweat to fit your board.
  */
 #define SD_CONFIG_133MHz	SD_CFG_1(2, 0x818, 6, 8, 3, 3, 3)
 #define SD_CONFIG_100MHz	SD_CFG_1(2, 0x620, 5, 6, 2, 3, 2)
@@ -65,7 +65,7 @@
 
 	.set noreorder
 /* Loongson ls1c300 SoC do not have onchip sram for initial stack,
- * initial the external sdram on reset as soon as possiable.
+ * initialize the external sdram on reset as early as possiable.
  */
 LEAF(ls1c300_sdram_init)
 #if !CONFIG_IS_ENABLED(SKIP_LOWLEVEL_INIT)
