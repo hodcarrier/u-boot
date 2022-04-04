@@ -17,19 +17,16 @@
 		};
 	};
 
-	xtal: oscillator {
-		compatible = "fixed-clock";
-		clock-frequency = <24000000>;
-		#clock-cells = <0>;
-	};
-
-	soc {
+	clocks {
 		#address-cells = <1>;
 		#size-cells = <1>;
-		compatible = "simple-bus";
-		ranges;
+		u-boot,dm-pre-reloc;
 
-		// TODO: add more device.
+		xtal: oscillator {
+			compatible = "fixed-clock";
+			clock-frequency = <24000000>;
+			#clock-cells = <0>;
+		};
 
 		acc: clock-controller@1fe78030 {
 			compatible = "loongson,ls1c300-clk";
@@ -38,6 +35,13 @@
 			reg = <0x1fe78030 0x8>, <0x1fe7c010 0x4>;
 			u-boot,dm-pre-reloc;
 		};
+	};
+
+	soc {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "simple-bus";
+		ranges;
 
 		uart0: serial@1fe40000 {
 			compatible = "loongson,ls1c300-uart", "ns16550a";
