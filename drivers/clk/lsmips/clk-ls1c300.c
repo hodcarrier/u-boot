@@ -16,6 +16,10 @@
 #include <linux/io.h>
 #include <linux/clk-provider.h>
 
+/* PLL/SDRAM Frequency Configuration Register */
+#define START_FREQ	0
+#define CLK_DIV_PARAM	4
+
 /* START_FREQ */
 #define	PLL_VALID	BIT(31)
 #define	RESERVED0	GENMASK(30, 24)
@@ -45,6 +49,24 @@ static const struct clk_div_table sdram_div_table[] = {
 	{.val = 3, .div = 3},
 };
 
+ulong ls1c300_pll_get_rate(struct clk *clk)
+{
+	unsigned int mult, div;
+	unsigned int val;
+	long long parent_rate;
+	void *base;
+
+	parent_rate = clk_get_parent_rate(clk);
+	base = (void *)clk->data;
+	val = readl(base + START_FREQ);
+
+	mult = FIELD_GET(FRAC_N, val) + FIELD_GET(M_PLL, val);
+	div = 4;
+	val = (mult * parent_rate) / div;
+
+	return val;
+}
+
 static ulong ls1c300_clk_get_rate(struct clk *clk)
 {
 	struct clk *cl;
@@ -59,17 +81,6 @@ static ulong ls1c300_clk_get_rate(struct clk *clk)
 	return rate;
 }
 
-static int ls1c300_clk_enable(struct clk *clk)
-{
-	/* Nothing to do on Octeon */
-	return 0;
-}
-
-static const struct clk_ops ls1c300_clk_ops = {
-	.enable = ls1c300_clk_enable,
-	.get_rate = ls1c300_clk_get_rate,
-};
-
 static int ls1c300_clk_probe(struct udevice *dev)
 {
 	void __iomem *base;
@@ -81,21 +92,10 @@ static int ls1c300_clk_probe(struct udevice *dev)
 	int ret;
 	const char *parent_name;
 	unsigned int mult, div;
-	unsigned int val;
 	int flags;
 
 	base = (void *)dev_remap_addr_index(dev, 0);
-#define START_FREQ	(0)
-#define CLK_DIV_PARAM	(4)
 	cpu_throt  = (void *)dev_remap_addr_index(dev, 1);
-
-	debug("     base: %p\n", base);
-	debug("cpu_throt: %p\n", cpu_throt);
-
-	val = readl(base + START_FREQ);
-	debug("   START_FREQ: [%08x]\n", val);
-	val = readl(base + CLK_DIV_PARAM);
-	debug("CLK_DIV_PARAM: [%08x]\n", val);
 
 	ret = clk_get_by_index(dev, 0, &clk);
 	if (ret)
@@ -104,9 +104,10 @@ static int ls1c300_clk_probe(struct udevice *dev)
 	ret = clk_get_rate(&clk);
 
 	parent_name = clk.dev->name;
-	val = readl(base + START_FREQ);
-	mult = FIELD_GET(FRAC_N, val) + FIELD_GET(M_PLL, val); div = 4;
-	cl = clk_register_fixed_factor(NULL, "pll", parent_name, 0, mult, div);
+
+	cl = kzalloc(sizeof(*cl), GFP_KERNEL);
+	cl->data = (unsigned long)base;
+	ret = clk_register(cl, "clk-ls1c300-pll", "pll", parent_name);
 	clk_dm(CLK_PLL, cl);
 
 	addr = base + CLK_DIV_PARAM;
@@ -118,7 +119,8 @@ static int ls1c300_clk_probe(struct udevice *dev)
 	cl = clk_register_divider(NULL, "pix_div", "pll", 0, addr, 24, 7, flags);
 	clk_dm(CLK_PIX, cl);
 
-	mult = FIELD_GET(CPU_THROT, readl(cpu_throt)) + 1; div = 16;
+	mult = FIELD_GET(CPU_THROT, readl(cpu_throt)) + 1;
+	div = 16;
 	cl = clk_register_fixed_factor(NULL, "cpu_throt_factor", "cpu_div", CLK_GET_RATE_NOCACHE, mult, div);
 	clk_dm(CLK_CPU_THROT, cl);
 
@@ -133,6 +135,20 @@ static int ls1c300_clk_probe(struct udevice *dev)
 static const struct udevice_id ls1c300_clk_ids[] = {
 	{ .compatible = "loongson,ls1c300-clk" },
 	{ }
+};
+
+struct clk_ops clk_ls1c300_pll_ops = {
+	.get_rate = ls1c300_pll_get_rate,
+};
+
+static const struct clk_ops ls1c300_clk_ops = {
+	.get_rate = ls1c300_clk_get_rate,
+};
+
+U_BOOT_DRIVER(clk_ls1c300_pll) = {
+	.name	= "clk-ls1c300-pll",
+	.id	= UCLASS_CLK,
+	.ops	= &clk_ls1c300_pll_ops,
 };
 
 U_BOOT_DRIVER(ls1c300_clk) = {
