@@ -121,6 +121,13 @@ config RESET_SOCFPGA
 	help
 	  Support for reset controller on SoCFPGA platform.
 
+config RESET_LSMIPS
+	bool "Reset controller driver for Loongson MIPS platform"
+	depends on DM_RESET && ARCH_LSMIPS
+	default y
+	help
+	  Support for reset controller on Loongson MIPS platform.
+
 config RESET_MEDIATEK
 	bool "Reset controller driver for MediaTek SoCs"
 	depends on DM_RESET && ARCH_MEDIATEK && CLK
