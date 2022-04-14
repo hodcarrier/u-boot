@@ -31,6 +31,7 @@ config SPL_PAYLOAD
 
 config BUILD_TARGET
 	default "u-boot-with-spl.bin" if SPL
+	default "u-boot.bin" if !SPL
 
 choice
 	prompt "Loongson MIPS SoC select"
