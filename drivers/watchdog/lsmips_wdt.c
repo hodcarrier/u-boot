@@ -60,13 +60,14 @@ static int lsmips_wdt_start(struct udevice *dev, u64 timeout_ms, ulong flags)
 {
 	struct lsmips_wdt_priv *priv = dev_get_priv(dev);
 	unsigned int timeout;
+	const unsigned int MSEC_PER_SEC = 1000;
 
-	timeout = U32_MAX / (priv->clock / 1000);
+	timeout = U32_MAX / (priv->clock / MSEC_PER_SEC);
 
 	if (timeout < timeout_ms)
 		timeout = U32_MAX;
 	else
-		timeout = timeout_ms * (priv->clock / 1000);
+		timeout = timeout_ms * (priv->clock / MSEC_PER_SEC);
 
 	debug("WDT: reload  = %08x\n", timeout);
 
@@ -92,14 +93,7 @@ static int lsmips_wdt_probe(struct udevice *dev)
 		priv->clock = clk_get_rate(&cl);
 
 	if (priv->clock < 45000000 || priv->clock > 133000000) {
-		/*
-		 * according to datasheet, the SDRAM works at the range frequency of 45~133MHz,
-		 * the watchdog's clock is the same with the SDRAM, see page 32.
-		 * so, if we got a clock out of this range,
-		 * probably the clock is wrong or working without SDRAM.
-		 * assign a default value 1^26 in this case.
-		 */
-		priv->clock = 67108864;
+		return -EAGAIN;
 	}
 
 	debug("WDT: clock = %ld\n", priv->clock);
