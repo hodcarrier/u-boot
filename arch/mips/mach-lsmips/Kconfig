@@ -37,7 +37,6 @@ choice
 
 config SOC_LS1C300
 	bool "LS1C300"
-	select MIPS_L1_CACHE_SHIFT_5
 	select CLK_CCF
 	select SPL_SEPARATE_BSS if SPL
 	select SPL_INIT_STACK_WITHOUT_MALLOC_F if SPL
