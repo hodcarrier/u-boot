@@ -125,7 +125,7 @@ static int ls1c300_clk_probe(struct udevice *dev)
 	addr = base + START_FREQ;
 	cl = clk_register_divider(NULL, "sdram_div", "cpu_div", 0, addr, 0, 2, 0);
 	to_clk_divider(cl)->table = sdram_div_table;
-	clk_dm(CLK_SDRAM, cl);
+	clk_dm(CLK_APB, cl);
 
 	return 0;
 }

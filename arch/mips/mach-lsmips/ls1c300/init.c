@@ -43,7 +43,7 @@ int print_cpuinfo(void)
 	clk.id = CLK_CPU_THROT;
 	gd->cpu_clk = clk_get_rate(&clk);
 
-	clk.id = CLK_SDRAM;
+	clk.id = CLK_APB;
 	gd->mem_clk = clk_get_rate(&clk);
 
 	printf("Clock: CPU: %sMHz, ", strmhz(buf, gd->cpu_clk));
