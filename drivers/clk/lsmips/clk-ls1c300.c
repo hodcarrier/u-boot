@@ -51,18 +51,18 @@ static const struct clk_div_table sdram_div_table[] = {
 
 ulong ls1c300_pll_get_rate(struct clk *clk)
 {
-	unsigned int mult, div;
-	unsigned int val;
+	unsigned int mult;
 	long long parent_rate;
 	void *base;
+	unsigned int val;
 
 	parent_rate = clk_get_parent_rate(clk);
 	base = (void *)clk->data;
+
 	val = readl(base + START_FREQ);
 
 	mult = FIELD_GET(FRAC_N, val) + FIELD_GET(M_PLL, val);
-	div = 4;
-	val = (mult * parent_rate) / div;
+	val = (mult * parent_rate) / 4;
 
 	return val;
 }
@@ -88,11 +88,9 @@ static int ls1c300_clk_probe(struct udevice *dev)
 	void __iomem *addr;
 
 	struct clk *cl, clk;
-
-	int ret;
 	const char *parent_name;
-	unsigned int mult, div;
 	int flags;
+	int ret;
 
 	base = (void *)dev_remap_addr_index(dev, 0);
 	cpu_throt  = (void *)dev_remap_addr_index(dev, 1);
@@ -107,7 +105,7 @@ static int ls1c300_clk_probe(struct udevice *dev)
 
 	cl = kzalloc(sizeof(*cl), GFP_KERNEL);
 	cl->data = (unsigned long)base;
-	ret = clk_register(cl, "clk-ls1c300-pll", "pll", parent_name);
+	ret = clk_register(cl, "clk_ls1c300_pll", "pll", parent_name);
 	clk_dm(CLK_PLL, cl);
 
 	addr = base + CLK_DIV_PARAM;
@@ -119,9 +117,9 @@ static int ls1c300_clk_probe(struct udevice *dev)
 	cl = clk_register_divider(NULL, "pix_div", "pll", 0, addr, 24, 7, flags);
 	clk_dm(CLK_PIX, cl);
 
-	mult = FIELD_GET(CPU_THROT, readl(cpu_throt)) + 1;
-	div = 16;
-	cl = clk_register_fixed_factor(NULL, "cpu_throt_factor", "cpu_div", CLK_GET_RATE_NOCACHE, mult, div);
+	cl = kzalloc(sizeof(*cl), GFP_KERNEL);
+	cl->data = (unsigned long)cpu_throt;
+	ret = clk_register(cl, "clk_cpu_throt", "cpu_throt_factor", "cpu_div");
 	clk_dm(CLK_CPU_THROT, cl);
 
 	addr = base + START_FREQ;
@@ -132,9 +130,27 @@ static int ls1c300_clk_probe(struct udevice *dev)
 	return 0;
 }
 
+static ulong cpu_throt_get_rate(struct clk *clk)
+{
+	void __iomem *cpu_throt;
+	long long parent_rate;
+	ulong ret;
+
+	parent_rate = clk_get_parent_rate(clk);
+	cpu_throt = (void *)clk->data;
+
+	ret = readl(cpu_throt) + 1;
+	ret = parent_rate * ret / 16;
+	return ret;
+}
+
 static const struct udevice_id ls1c300_clk_ids[] = {
 	{ .compatible = "loongson,ls1c300-clk" },
 	{ }
+};
+
+struct clk_ops clk_cpu_throt_ops = {
+	.get_rate = cpu_throt_get_rate,
 };
 
 struct clk_ops clk_ls1c300_pll_ops = {
@@ -145,14 +161,20 @@ static const struct clk_ops ls1c300_clk_ops = {
 	.get_rate = ls1c300_clk_get_rate,
 };
 
+U_BOOT_DRIVER(clk_ls1c300_cpu_throt) = {
+	.name	= "clk_cpu_throt",
+	.id	= UCLASS_CLK,
+	.ops	= &clk_cpu_throt_ops,
+};
+
 U_BOOT_DRIVER(clk_ls1c300_pll) = {
-	.name	= "clk-ls1c300-pll",
+	.name	= "clk_ls1c300_pll",
 	.id	= UCLASS_CLK,
 	.ops	= &clk_ls1c300_pll_ops,
 };
 
 U_BOOT_DRIVER(ls1c300_clk) = {
-	.name = "ls1c300-clk",
+	.name = "clk_ls1c300",
 	.id = UCLASS_CLK,
 	.of_match = ls1c300_clk_ids,
 	.probe = ls1c300_clk_probe,
