@@ -88,7 +88,7 @@ struct uart_pin_config con[] = {
 
 void lsmips_spl_serial_init(void)
 {
-#ifdef CONFIG_SPL_SERIAL
+#if defined(CONFIG_SPL_SERIAL)
 	int pin_rx, pin_tx;
 	int afunc;
 
