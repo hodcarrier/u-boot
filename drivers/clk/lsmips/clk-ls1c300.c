@@ -60,11 +60,8 @@ ulong ls1c300_pll_get_rate(struct clk *clk)
 	base = (void *)clk->data;
 
 	val = readl(base + START_FREQ);
-
 	mult = FIELD_GET(FRAC_N, val) + FIELD_GET(M_PLL, val);
-	val = (mult * parent_rate) / 4;
-
-	return val;
+	return (mult * parent_rate) / 4;
 }
 
 static ulong ls1c300_clk_get_rate(struct clk *clk)
