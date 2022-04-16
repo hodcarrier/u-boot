@@ -149,11 +149,11 @@ static const struct udevice_id ls1c300_clk_ids[] = {
 	{ }
 };
 
-struct clk_ops clk_cpu_throt_ops = {
+static const struct clk_ops clk_cpu_throt_ops = {
 	.get_rate = cpu_throt_get_rate,
 };
 
-struct clk_ops clk_ls1c300_pll_ops = {
+static const struct clk_ops clk_ls1c300_pll_ops = {
 	.get_rate = ls1c300_pll_get_rate,
 };
 
