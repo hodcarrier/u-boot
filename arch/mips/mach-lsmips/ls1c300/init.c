@@ -59,5 +59,5 @@ int print_cpuinfo(void)
 
 ulong notrace get_tbclk(void)
 {
-	return gd->cpu_clk;
+	return gd->cpu_clk / 2;
 }
