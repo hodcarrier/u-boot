@@ -6,7 +6,7 @@
 #include <common.h>
 #include <mach/serial.h>
 
-#ifdef CONFIG_DEBUG_UART_BOARD_INIT
+#if defined(CONFIG_DEBUG_UART_BOARD_INIT)
 
 #define UART2_RX	36
 #define UART2_TX	37
