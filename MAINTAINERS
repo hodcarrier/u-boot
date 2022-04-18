@@ -1115,17 +1115,17 @@ F:	drivers/net/cortina_ni.h
 F:	drivers/net/phy/ca_phy.c
 
 MIPS LOONGSON LS1C300
-M:      Du Huanpeng <dhu@hodcarrier.org>
-S:      Maintained
-F:      arch/mips/dts/loongson32-ls1c300b.dtsi
-F:      arch/mips/dts/ls1c300-eval.dts
-F:      arch/mips/mach-lsmips/
-F:      board/loongson/ls1c300-eval/
-F:      configs/ls1c300_defconfig
-F:      drivers/clk/lsmips/
-F:      drivers/watchdog/lsmips_wdt.c
-F:      include/configs/ls1c300.h
-F:      include/dt-bindings/clock/ls1c300-clk.h
+M:	Du Huanpeng <dhu@hodcarrier.org>
+S:	Maintained
+F:	arch/mips/dts/loongson32-ls1c300b.dtsi
+F:	arch/mips/dts/ls1c300-eval.dts
+F:	arch/mips/mach-lsmips/
+F:	board/loongson/ls1c300-eval/
+F:	configs/ls1c300_defconfig
+F:	drivers/clk/lsmips/
+F:	drivers/watchdog/lsmips_wdt.c
+F:	include/configs/ls1c300.h
+F:	include/dt-bindings/clock/ls1c300-clk.h
 
 MIPS MEDIATEK
 M:	Weijie Gao <weijie.gao@mediatek.com>
