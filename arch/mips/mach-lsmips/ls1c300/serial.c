@@ -105,5 +105,5 @@ void lsmips_spl_serial_init(void)
 	gpio_set_alternate(pin_rx, afunc);
 	gpio_set_alternate(pin_tx, afunc);
 #endif /* CONFIG_SPL_SERIAL */
-	return ;
+	return;
 }
