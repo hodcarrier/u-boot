@@ -38,7 +38,7 @@ int print_cpuinfo(void)
 	clk.dev = udev;
 
 	ret = clk_request(udev, &clk);
-	if(ret < 0)
+	if (ret < 0)
 		return ret;
 
 	clk.id = CLK_XTAL;
