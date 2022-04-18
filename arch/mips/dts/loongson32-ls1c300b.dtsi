@@ -48,7 +48,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe40000 0x100>;
-			reg-shift = <0>;
 			status = "disabled";
 		};
 
@@ -56,7 +55,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe44000 0x100>;
-			reg-shift = <0>;
 			status = "disabled";
 		};
 
@@ -64,7 +62,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe48000 0x100>;
-			reg-shift = <0>;
 			resets = <&shut_ctrl UART2_SHUT>;
 			reset-names = "uart2";
 			status = "disabled";
@@ -74,7 +71,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe4c000 0x100>;
-			reg-shift = <0>;
 			status = "disabled";
 		};
 
@@ -82,7 +78,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe4c400 0x100>;
-			reg-shift = <0>;
 			status = "disabled";
 		};
 
@@ -90,7 +85,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe4c500 0x100>;
-			reg-shift = <0>;
 			status = "disabled";
 		};
 
@@ -98,7 +92,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe4c600 0x100>;
-			reg-shift = <0>;
 			status = "disabled";
 		};
 
@@ -106,7 +99,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe4c700 0x100>;
-			reg-shift = <0>;
 			status = "disabled";
 		};
 
@@ -114,7 +106,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe4c800 0x100>;
-			reg-shift = <0>;
 			status = "disabled";
 		};
 
@@ -122,7 +113,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe4c900 0x100>;
-			reg-shift = <0>;
 			status = "disabled";
 		};
 
@@ -130,7 +120,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe4ca00 0x100>;
-			reg-shift = <0>;
 			status = "disabled";
 		};
 
@@ -138,7 +127,6 @@
 			compatible = "loongson,ls1c300-uart", "ns16550a";
 			clocks = <&acc CLK_APB>;
 			reg = <0x1fe4cb00 0x100>;
-			reg-shift = <0>;
 			status = "disabled";
 		};
 
