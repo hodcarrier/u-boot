@@ -1808,6 +1808,7 @@ ifeq ($(CONFIG_KALLSYMS),y)
 	$(call cmd,smap)
 	$(call cmd,u-boot__) common/system_map.o
 endif
+	cp $@ $${tftpboot}
 
 ifeq ($(CONFIG_RISCV),y)
 	@tools/prelink-riscv $@ 0
