@@ -29,7 +29,6 @@ int print_cpuinfo(void)
 	printf("CPU: Loongson ls1c300b\n");
 
 	ret = uclass_get_device_by_driver(UCLASS_CLK, DM_DRIVER_GET(ls1c300_clk), &udev);
-
 	if (ret) {
 		printf("error: clock driver not found.\n");
 		return 0;
