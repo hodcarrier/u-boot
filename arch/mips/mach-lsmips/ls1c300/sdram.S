@@ -50,7 +50,7 @@
 	((b<<SD_BIT)|(c<<SD_CSIZE)|(r<<SD_RSIZE))
 /*
  * recommended values by ls1c300 user manual,
- * tweat to fit your board.
+ * tweak to fit your board.
  */
 #define SD_CONFIG_133MHz	SD_CFG_1(2, 0x818, 6, 8, 3, 3, 3)
 #define SD_CONFIG_100MHz	SD_CFG_1(2, 0x620, 5, 6, 2, 3, 2)
