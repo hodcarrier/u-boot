@@ -122,6 +122,8 @@ int do_booti(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	images.os.arch = IH_ARCH_RISCV;
 #elif CONFIG_ARM64
 	images.os.arch = IH_ARCH_ARM64;
+#elif CONFIG_LOONGARCH_SMODE
+	images.os.arch = IH_ARCH_LOONGARCH;
 #endif
 	ret = do_bootm_states(cmdtp, flag, argc, argv,
 #ifdef CONFIG_SYS_BOOT_RAMDISK_HIGH

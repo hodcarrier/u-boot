@@ -14,10 +14,10 @@
  *
  *  Changelog:
  *   27-06-1996	RMK	Created
- *   25-10-2017	Modified for arch RISCV
+ *   25-10-2017	Modified for arch LOONGARCH
  */
-#ifndef __ARCH_RISCV_POSIX_TYPES_H
-#define __ARCH_RISCV_POSIX_TYPES_H
+#ifndef __ARCH_LOONGARCH_POSIX_TYPES_H
+#define __ARCH_LOONGARCH_POSIX_TYPES_H
 
 /*
  * This file is generally used by user-level software, so you need to
@@ -90,4 +90,4 @@ typedef struct {
 
 #endif
 
-#endif /* __ARCH_RISCV_POSIX_TYPES_H */
+#endif /* __ARCH_LOONGARCH_POSIX_TYPES_H */

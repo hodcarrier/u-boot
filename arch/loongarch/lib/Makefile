@@ -11,7 +11,7 @@ obj-$(CONFIG_CMD_BOOTI) += bootm.o image.o
 obj-$(CONFIG_CMD_GO) += boot.o
 obj-y	+= cache.o
 obj-$(CONFIG_SIFIVE_CACHE) += sifive_cache.o
-ifeq ($(CONFIG_$(SPL_)RISCV_MMODE),y)
+ifeq ($(CONFIG_$(SPL_)LOONGARCH_MMODE),y)
 obj-$(CONFIG_$(SPL_)SIFIVE_CLINT) += sifive_clint.o
 obj-$(CONFIG_ANDES_PLICSW) += andes_plicsw.o
 else

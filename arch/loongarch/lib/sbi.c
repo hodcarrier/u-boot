@@ -204,7 +204,7 @@ void sbi_srst_reset(unsigned long type, unsigned long reason)
 		  0, 0, 0, 0);
 }
 
-#ifdef CONFIG_SBI_V01
+#ifdef CONFIG_SBI_V01_WIP
 
 /**
  * sbi_console_putchar() - Writes given character to the console device.
@@ -313,4 +313,4 @@ void sbi_remote_sfence_vma_asid(const unsigned long *hart_mask,
 		  (unsigned long)hart_mask, start, size, asid, 0, 0);
 }
 
-#endif /* CONFIG_SBI_V01 */
+#endif /* CONFIG_SBI_V01_WIP */

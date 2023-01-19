@@ -4,14 +4,14 @@
  * Rick Chen, Andes Technology Corporation <rick@andestech.com>
  */
 
-#ifndef _ASM_RISCV_CACHE_H
-#define _ASM_RISCV_CACHE_H
+#ifndef _ASM_LOONGARCH_CACHE_H
+#define _ASM_LOONGARCH_CACHE_H
 
 /* cache */
 void cache_flush(void);
 
 /*
- * The current upper bound for RISCV L1 data cache line sizes is 32 bytes.
+ * The current upper bound for LOONGARCH L1 data cache line sizes is 32 bytes.
  * We use that value for aligning DMA buffers unless the board config has
  * specified an alternate cache line size.
  */
@@ -21,4 +21,4 @@ void cache_flush(void);
 #define ARCH_DMA_MINALIGN	32
 #endif
 
-#endif /* _ASM_RISCV_CACHE_H */
+#endif /* _ASM_LOONGARCH_CACHE_H */

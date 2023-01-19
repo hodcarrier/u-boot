@@ -15,8 +15,8 @@
  * that they are atomic.
  */
 
-#ifndef __ASM_RISCV_BITOPS_H
-#define __ASM_RISCV_BITOPS_H
+#ifndef __ASM_LOONGARCH_BITOPS_H
+#define __ASM_LOONGARCH_BITOPS_H
 
 #ifdef __KERNEL__
 
@@ -173,4 +173,4 @@ static inline unsigned long ffz(unsigned long word)
 
 #endif /* __KERNEL__ */
 
-#endif /* __ASM_RISCV_BITOPS_H */
+#endif /* __ASM_LOONGARCH_BITOPS_H */

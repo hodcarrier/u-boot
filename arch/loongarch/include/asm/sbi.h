@@ -6,8 +6,8 @@
  * Taken from Linux arch/riscv/include/asm/sbi.h
  */
 
-#ifndef _ASM_RISCV_SBI_H
-#define _ASM_RISCV_SBI_H
+#ifndef _ASM_LOONGARCH_SBI_H
+#define _ASM_LOONGARCH_SBI_H
 
 #include <linux/types.h>
 
@@ -89,7 +89,7 @@ enum sbi_srst_reset_reason {
 	SBI_SRST_RESET_REASON_SYS_FAILURE,
 };
 
-#ifdef CONFIG_SBI_V01
+#ifdef CONFIG_SBI_V01_WIP
 #define SBI_EXT_SET_TIMER		SBI_EXT_0_1_SET_TIMER
 #define SBI_FID_SET_TIMER		0
 #define SBI_EXT_SEND_IPI		SBI_EXT_0_1_SEND_IPI
@@ -135,7 +135,7 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
 			unsigned long arg3, unsigned long arg4,
 			unsigned long arg5);
 
-#ifdef CONFIG_SBI_V01
+#ifdef CONFIG_SBI_V01_WIP
 void sbi_console_putchar(int ch);
 int sbi_console_getchar(void);
 void sbi_clear_ipi(void);

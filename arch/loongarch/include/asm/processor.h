@@ -13,14 +13,14 @@
  * published by the Free Software Foundation.
  */
 
-#ifndef __ASM_RISCV_PROCESSOR_H
-#define __ASM_RISCV_PROCESSOR_H
+#ifndef __ASM_LOONGARCH_PROCESSOR_H
+#define __ASM_LOONGARCH_PROCESSOR_H
 
 /**************************************************************
  * CAUTION:
- *   - do not implement for RISCV Arch yet.
+ *   - do not implement for LOONGARCH Arch yet.
  *   - so far some files include /asm/processor.h, but
  *     no one uses the macros defined in this head file.
  **************************************************************/
 
-#endif /* __ASM_RISCV_PROCESSOR_H */
+#endif /* __ASM_LOONGARCH_PROCESSOR_H */

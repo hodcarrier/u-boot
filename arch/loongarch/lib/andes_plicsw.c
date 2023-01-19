@@ -46,7 +46,7 @@ static int enable_ipi(int hart)
 int riscv_init_ipi(void)
 {
 	int ret;
-	long *base = syscon_get_first_range(RISCV_SYSCON_PLICSW);
+	long *base = syscon_get_first_range(LOONGARCH_SYSCON_PLICSW);
 	ofnode node;
 	struct udevice *dev;
 	u32 reg;
@@ -116,7 +116,7 @@ int riscv_get_ipi(int hart, int *pending)
 }
 
 static const struct udevice_id andes_plicsw_ids[] = {
-	{ .compatible = "andestech,plicsw", .data = RISCV_SYSCON_PLICSW },
+	{ .compatible = "andestech,plicsw", .data = LOONGARCH_SYSCON_PLICSW },
 	{ }
 };
 

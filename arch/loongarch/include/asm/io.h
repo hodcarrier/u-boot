@@ -4,8 +4,8 @@
  * Rick Chen, Andes Technology Corporation <rick@andestech.com>
  *
  */
-#ifndef __ASM_RISCV_IO_H
-#define __ASM_RISCV_IO_H
+#ifndef __ASM_LOONGARCH_IO_H
+#define __ASM_LOONGARCH_IO_H
 
 #include <linux/types.h>
 #include <asm/barrier.h>
@@ -325,4 +325,4 @@ static inline void writesl(unsigned int *addr, const void *data, int longlen)
 
 #include <asm-generic/io.h>
 
-#endif	/* __ASM_RISCV_IO_H */
+#endif	/* __ASM_LOONGARCH_IO_H */

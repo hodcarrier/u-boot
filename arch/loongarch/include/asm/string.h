@@ -9,8 +9,8 @@
  * for more details.
  */
 
-#ifndef __ASM_RISCV_STRING_H
-#define __ASM_RISCV_STRING_H
+#ifndef __ASM_LOONGARCH_STRING_H
+#define __ASM_LOONGARCH_STRING_H
 
 /*
  * We don't do inline string functions, since the
@@ -40,4 +40,4 @@ extern void *memmove(void *, const void *, __kernel_size_t);
 #endif
 extern void *memset(void *, int, __kernel_size_t);
 
-#endif /* __ASM_RISCV_STRING_H */
+#endif /* __ASM_LOONGARCH_STRING_H */

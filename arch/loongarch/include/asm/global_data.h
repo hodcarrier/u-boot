@@ -36,14 +36,14 @@ struct arch_global_data {
 
 #include <asm-generic/global_data.h>
 
-#define DECLARE_GLOBAL_DATA_PTR register gd_t *gd asm ("gp")
+#define DECLARE_GLOBAL_DATA_PTR register gd_t *gd asm ("$r21")
 
 static inline void set_gd(volatile gd_t *gd_ptr)
 {
 #ifdef CONFIG_64BIT
-	asm volatile("ld gp, %0\n" : : "m"(gd_ptr));
+	asm volatile("ld $r21, %0\n" : : "m"(gd_ptr));
 #else
-	asm volatile("lw gp, %0\n" : : "m"(gd_ptr));
+	asm volatile("lw $r21, %0\n" : : "m"(gd_ptr));
 #endif
 }
 

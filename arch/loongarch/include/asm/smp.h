@@ -4,8 +4,8 @@
  * Lukas Auer <lukas.auer@aisec.fraunhofer.de>
  */
 
-#ifndef _ASM_RISCV_SMP_H
-#define _ASM_RISCV_SMP_H
+#ifndef _ASM_LOONGARCH_SMP_H
+#define _ASM_LOONGARCH_SMP_H
 
 /**
  * struct ipi_data - Inter-processor interrupt (IPI) data structure

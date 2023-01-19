@@ -6,8 +6,8 @@
  *   Anup Patel <anup.patel@wdc.com>
  */
 
-#ifndef __ASM_RISCV_DMA_MAPPING_H
-#define __ASM_RISCV_DMA_MAPPING_H
+#ifndef __ASM_LOONGARCH_DMA_MAPPING_H
+#define __ASM_LOONGARCH_DMA_MAPPING_H
 
 #include <common.h>
 #include <linux/types.h>
@@ -27,4 +27,4 @@ static inline void dma_free_coherent(void *addr)
 	free(addr);
 }
 
-#endif /* __ASM_RISCV_DMA_MAPPING_H */
+#endif /* __ASM_LOONGARCH_DMA_MAPPING_H */

@@ -6,8 +6,8 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
-#ifndef __ASM_RISCV_PTRACE_H
-#define __ASM_RISCV_PTRACE_H
+#ifndef __ASM_LOONGARCH_PTRACE_H
+#define __ASM_LOONGARCH_PTRACE_H
 
 struct pt_regs {
 	unsigned long sepc;
@@ -100,4 +100,4 @@ static inline void frame_pointer_set(struct pt_regs *regs, ulong val)
 	SET_FP(regs, val);
 }
 
-#endif /* __ASM_RISCV_PTRACE_H */
+#endif /* __ASM_LOONGARCH_PTRACE_H */

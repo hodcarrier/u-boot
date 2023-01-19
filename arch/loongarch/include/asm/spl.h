@@ -5,8 +5,8 @@
  * (C) Copyright 2012
  * Texas Instruments, <www.ti.com>
  */
-#ifndef _ASM_RISCV_SPL_H_
-#define _ASM_RISCV_SPL_H_
+#ifndef _ASM_LOONGARCH_SPL_H_
+#define _ASM_LOONGARCH_SPL_H_
 
 enum {
 	BOOT_DEVICE_RAM,
