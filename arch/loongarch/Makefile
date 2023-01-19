@@ -43,7 +43,7 @@ ifeq ($(toolchain-need-zicsr-zifencei),y)
 endif
 
 ARCH_FLAGS = -march=$(LOONGARCH_MARCH) -mabi=$(ABI) -mcmodel=$(CMODEL)
-ARCH_FLAGS = loongarch64 -mabi=lp64d -mcmodel=normal
+ARCH_FLAGS = -march=loongarch64 -mabi=lp64d -mcmodel=normal
 
 PLATFORM_CPPFLAGS	+= $(ARCH_FLAGS)
 CFLAGS_EFI		+= $(ARCH_FLAGS)
