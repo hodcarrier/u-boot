@@ -58,13 +58,13 @@ static inline bool supports_extension(char ext)
 
 	return false;
 #else  /* !CONFIG_CPU */
-#if CONFIG_IS_ENABLED(RISCV_MMODE)
+#if CONFIG_IS_ENABLED(LOONGARCH_MMODE)
 	return csr_read(CSR_MISA) & (1 << (ext - 'a'));
-#else  /* !CONFIG_IS_ENABLED(RISCV_MMODE) */
+#else  /* !CONFIG_IS_ENABLED(LOONGARCH_MMODE) */
 #warning "There is no way to determine the available extensions in S-mode."
 #warning "Please convert your board to use the RISC-V CPU driver."
 	return false;
-#endif /* CONFIG_IS_ENABLED(RISCV_MMODE) */
+#endif /* CONFIG_IS_ENABLED(LOONGARCH_MMODE) */
 #endif /* CONFIG_CPU */
 }
 
@@ -107,12 +107,12 @@ int riscv_cpu_setup(void *ctx, struct event *event)
 		csr_write(CSR_FCSR, 0);
 	}
 
-	if (CONFIG_IS_ENABLED(RISCV_MMODE)) {
+	if (CONFIG_IS_ENABLED(LOONGARCH_MMODE)) {
 		/*
 		 * Enable perf counters for cycle, time,
 		 * and instret counters only
 		 */
-#ifdef CONFIG_RISCV_PRIV_1_9
+#ifdef CONFIG_LOONGARCH_PRIV_1_9
 		csr_write(CSR_MSCOUNTEREN, GENMASK(2, 0));
 		csr_write(CSR_MUCOUNTEREN, GENMASK(2, 0));
 #else
@@ -121,7 +121,7 @@ int riscv_cpu_setup(void *ctx, struct event *event)
 
 		/* Disable paging */
 		if (supports_extension('s'))
-#ifdef CONFIG_RISCV_PRIV_1_9
+#ifdef CONFIG_LOONGARCH_PRIV_1_9
 			csr_read_clear(CSR_MSTATUS, SR_VM);
 #else
 			csr_write(CSR_SATP, 0);

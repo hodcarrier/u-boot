@@ -4,15 +4,15 @@
  * Padmarao Begari, Microsemi Corporation <padmarao.begari@microsemi.com>
  */
 
-#ifndef RISCV_CSR_ENCODING_H
-#define RISCV_CSR_ENCODING_H
+#ifndef LOONGARCH_CSR_ENCODING_H
+#define LOONGARCH_CSR_ENCODING_H
 
 #include <asm/csr.h>
 #ifndef __ASSEMBLY__
 #include <linux/bitops.h>
 #endif
 
-#if CONFIG_IS_ENABLED(RISCV_SMODE)
+#if CONFIG_IS_ENABLED(LOONGARCH_SMODE)
 #define MODE_PREFIX(__suffix)	s##__suffix
 #else
 #define MODE_PREFIX(__suffix)	m##__suffix
@@ -145,18 +145,18 @@
 # define SSTATUS_SD SSTATUS64_SD
 # define MCAUSE_INT MCAUSE64_INT
 # define MCAUSE_CAUSE MCAUSE64_CAUSE
-# define RISCV_PGLEVEL_BITS 9
+# define LOONGARCH_PGLEVEL_BITS 9
 #else
 # define MSTATUS_SD MSTATUS32_SD
 # define SSTATUS_SD SSTATUS32_SD
-# define RISCV_PGLEVEL_BITS 10
+# define LOONGARCH_PGLEVEL_BITS 10
 # define MCAUSE_INT MCAUSE32_INT
 # define MCAUSE_CAUSE MCAUSE32_CAUSE
 #endif
 
-#define RISCV_PGSHIFT 12
-#define RISCV_PGSIZE BIT(RISCV_PGSHIFT)
+#define LOONGARCH_PGSHIFT 12
+#define LOONGARCH_PGSIZE BIT(LOONGARCH_PGSHIFT)
 
 #endif /* __riscv */
 
-#endif /* RISCV_CSR_ENCODING_H */
+#endif /* LOONGARCH_CSR_ENCODING_H */

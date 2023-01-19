@@ -21,14 +21,14 @@
 #define LREG			lw
 #define SREG			sw
 #define REGBYTES		4
-#define RELOC_TYPE		R_RISCV_32
+#define RELOC_TYPE		R_LOONGARCH_32
 #define SYM_INDEX		0x8
 #define SYM_SIZE		0x10
 #else
 #define LREG			ld
 #define SREG			sd
 #define REGBYTES		8
-#define RELOC_TYPE		R_RISCV_64
+#define RELOC_TYPE		R_LOONGARCH_64
 #define SYM_INDEX		0x20
 #define SYM_SIZE		0x18
 #endif
@@ -40,7 +40,7 @@ secondary_harts_relocation_error:
 .section .text
 .globl _start
 _start:
-#if CONFIG_IS_ENABLED(RISCV_MMODE)
+#if CONFIG_IS_ENABLED(LOONGARCH_MMODE)
 	csrr	a0, CSR_MHARTID
 #endif
 
@@ -56,10 +56,10 @@ _start:
 	 * early trap. The global data pointer will be set its actual value only
 	 * after it has been initialized.
 	 */
-	mv	gp, zero
+	mv	u0, zero
 
 	/*
-	 * Set the trap handler. This must happen after initializing gp because
+	 * Set the trap handler. This must happen after initializing u0 because
 	 * the handler may use it.
 	 */
 	la	t0, trap_entry
@@ -79,7 +79,7 @@ _start:
 	bge	tp, t0, hart_out_of_bounds_loop
 
 	/* set xSIE bit to receive IPIs */
-#if CONFIG_IS_ENABLED(RISCV_MMODE)
+#if CONFIG_IS_ENABLED(LOONGARCH_MMODE)
 	li	t0, MIE_MSIE
 #else
 	li	t0, SIE_SSIE
@@ -133,14 +133,14 @@ call_harts_early_init:
 	bnez	s2, wait_for_gd_init
 #else
 	/*
-	 * FIXME: gp is set before it is initialized. If an XIP U-Boot ever
+	 * FIXME: u0 is set before it is initialized. If an XIP U-Boot ever
 	 * encounters a pending IPI on boot it is liable to jump to whatever
 	 * memory happens to be in ipi_data.addr on boot. It may also run into
 	 * problems if it encounters an exception too early (because printf/puts
 	 * accesses gd).
 	 */
-	mv	gp, s0
-#if CONFIG_IS_ENABLED(RISCV_MMODE)
+	mv	u0, s0
+#if CONFIG_IS_ENABLED(LOONGARCH_MMODE)
 	bnez	tp, secondary_hart_loop
 #endif
 #endif
@@ -148,9 +148,9 @@ call_harts_early_init:
 	mv      a0, s0
 	jal	board_init_f_init_reserve
 
-	SREG	s1, GD_FIRMWARE_FDT_ADDR(gp)
+	SREG	s1, GD_FIRMWARE_FDT_ADDR(u0)
 	/* save the boot hart id to global_data */
-	SREG	tp, GD_BOOT_HART(gp)
+	SREG	tp, GD_BOOT_HART(u0)
 
 #if !CONFIG_IS_ENABLED(XIP)
 #ifdef CONFIG_AVAILABLE_HARTS
@@ -164,7 +164,7 @@ wait_for_gd_init:
 	 * This was already set by arch_setup_gd on the boot hart, but all other
 	 * harts' global data pointers gets set here.
 	 */
-	mv	gp, s0
+	mv	u0, s0
 #ifdef CONFIG_AVAILABLE_HARTS
 	la	t0, available_harts_lock
 	li	t1, 1
@@ -174,9 +174,9 @@ wait_for_gd_init:
 	/* register available harts in the available_harts mask */
 	li	t1, 1
 	sll	t1, t1, tp
-	LREG	t2, GD_AVAILABLE_HARTS(gp)
+	LREG	t2, GD_AVAILABLE_HARTS(u0)
 	or	t2, t2, t1
-	SREG	t2, GD_AVAILABLE_HARTS(gp)
+	SREG	t2, GD_AVAILABLE_HARTS(u0)
 
 	amoswap.w.rl zero, zero, 0(t0)
 #endif
@@ -245,7 +245,7 @@ spl_secondary_hart_stack_gd_setup:
 #endif
 
 	/* set new global data pointer on main hart */
-1:	mv	gp, s0
+1:	mv	u0, s0
 
 spl_call_board_init_r:
 	mv	a0, zero
@@ -311,8 +311,8 @@ fix_rela_dyn:
 
 6:
 	LREG	t5, -(REGBYTES*2)(t1)	/* t5 <-- relocation info:type */
-	li	t3, R_RISCV_RELATIVE	/* reloc type R_RISCV_RELATIVE */
-	bne	t5, t3, 8f		/* skip non-RISCV_RELOC entries */
+	li	t3, R_LOONGARCH_RELATIVE	/* reloc type R_LOONGARCH_RELATIVE */
+	bne	t5, t3, 8f		/* skip non-LOONGARCH_RELOC entries */
 	LREG	t3, -(REGBYTES*3)(t1)
 	LREG	t5, -(REGBYTES)(t1)	/* t5 <-- addend */
 	add	t5, t5, t6		/* t5 <-- location to fix up in RAM */
@@ -426,7 +426,7 @@ secondary_hart_relocate:
 	sub	sp, a1, t0
 
 	/* update global data pointer */
-	mv	gp, a2
+	mv	u0, a2
 #endif
 
 /*
@@ -438,7 +438,7 @@ secondary_hart_loop:
 
 #if CONFIG_IS_ENABLED(SMP)
 	csrr	t0, MODE_PREFIX(ip)
-#if CONFIG_IS_ENABLED(RISCV_MMODE)
+#if CONFIG_IS_ENABLED(LOONGARCH_MMODE)
 	andi	t0, t0, MIE_MSIE
 #else
 	andi	t0, t0, SIE_SSIE

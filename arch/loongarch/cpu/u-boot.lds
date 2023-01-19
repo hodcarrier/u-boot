@@ -4,14 +4,14 @@
  * Rick Chen, Andes Technology Corporation <rick@andestech.com>
  */
 
-OUTPUT_ARCH("riscv")
+OUTPUT_ARCH("loongarch")
 ENTRY(_start)
 
 SECTIONS
 {
 	. = ALIGN(4);
 	.text : {
-		arch/riscv/cpu/start.o	(.text)
+		arch/loongarch/cpu/start.o	(.text)
 	}
 
 	/* This needs to come before *(.text*) */

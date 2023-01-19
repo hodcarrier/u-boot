@@ -17,7 +17,7 @@
 DECLARE_GLOBAL_DATA_PTR;
 
 /* ASCII version of "RSC\0x5" defined in Linux kernel */
-#define LINUX_RISCV_IMAGE_MAGIC 0x05435352
+#define LINUX_LOONGARCH_IMAGE_MAGIC 0x05435352
 
 struct linux_image_h {
 	uint32_t	code0;		/* Executable code */
@@ -40,8 +40,8 @@ int booti_setup(ulong image, ulong *relocated_addr, ulong *size,
 
 	lhdr = (struct linux_image_h *)map_sysmem(image, 0);
 
-	if (lhdr->magic != LINUX_RISCV_IMAGE_MAGIC) {
-		puts("Bad Linux RISCV Image magic!\n");
+	if (lhdr->magic != LINUX_LOONGARCH_IMAGE_MAGIC) {
+		puts("Bad Linux LOONGARCH Image magic!\n");
 		return -EINVAL;
 	}
 

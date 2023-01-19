@@ -7,8 +7,8 @@
  * Modified from arch/arm/lib/elf_aarch64_efi.lds
  */
 
-OUTPUT_FORMAT("elf64-littleriscv", "elf64-littleriscv", "elf64-littleriscv")
-OUTPUT_ARCH(riscv)
+OUTPUT_FORMAT("elf64-loongarch", "elf64-loongarch", "elf64-loongarch")
+OUTPUT_ARCH(loongarch)
 ENTRY(_start)
 SECTIONS
 {

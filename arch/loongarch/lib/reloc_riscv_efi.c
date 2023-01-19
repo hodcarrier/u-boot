@@ -82,7 +82,7 @@ efi_status_t EFIAPI _relocate(long ldbase, Elf_Dyn *dyn)
 	while (relsz > 0) {
 		/* apply the relocs */
 		switch (ELF_R_TYPE(rel->r_info)) {
-		case R_RISCV_RELATIVE:
+		case R_LOONGARCH_RELATIVE:
 			addr = (ulong *)(ldbase + rel->r_offset);
 			*addr = ldbase + rel->r_addend;
 			break;

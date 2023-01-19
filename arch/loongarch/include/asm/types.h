@@ -9,8 +9,8 @@
  * for more details.
  */
 
-#ifndef __ASM_RISCV_TYPES_H
-#define __ASM_RISCV_TYPES_H
+#ifndef __ASM_LOONGARCH_TYPES_H
+#define __ASM_LOONGARCH_TYPES_H
 
 #include <asm-generic/int-ll64.h>
 
@@ -21,7 +21,7 @@ typedef unsigned short umode_t;
  */
 #ifdef __KERNEL__
 
-#ifdef CONFIG_ARCH_RV64I
+#ifdef CONFIG_ARCH_LA64I
 #define BITS_PER_LONG 64
 #else
 #define BITS_PER_LONG 32

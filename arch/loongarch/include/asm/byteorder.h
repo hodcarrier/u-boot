@@ -16,8 +16,8 @@
  *  d0...d31
  */
 
-#ifndef __ASM_RISCV_BYTEORDER_H
-#define __ASM_RISCV_BYTEORDER_H
+#ifndef __ASM_LOONGARCH_BYTEORDER_H
+#define __ASM_LOONGARCH_BYTEORDER_H
 
 #include <asm/types.h>
 
@@ -26,7 +26,7 @@
 #  define __SWAB_64_THRU_32__
 #endif
 
-#ifdef __RISCVEB__
+#ifdef __LOONGARCHEB__
 #include <linux/byteorder/big_endian.h>
 #else
 #include <linux/byteorder/little_endian.h>

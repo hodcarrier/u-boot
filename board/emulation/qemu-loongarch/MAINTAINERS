@@ -1,0 +1,11 @@
+QEMU LOONGARCH 'VIRT2' BOARD
+M:	Du Huanpeng <dhu@hodcarrier.org>
+S:	Maintained
+F:	board/emulation/qemu-loongarch/
+F:	include/configs/qemu-loongarch.h
+F:	configs/qemu-loongarch32_defconfig
+F:	configs/qemu-loongarch32_smode_defconfig
+F:	configs/qemu-loongarch32_spl_defconfig
+F:	configs/qemu-loongarch64_defconfig
+F:	configs/qemu-loongarch64_smode_defconfig
+F:	configs/qemu-loongarch64_spl_defconfig

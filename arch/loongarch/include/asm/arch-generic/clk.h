@@ -6,8 +6,8 @@
  *   Anup Patel <anup.patel@wdc.com>
  */
 
-#ifndef __ASM_RISCV_ARCH_CLK_H
-#define __ASM_RISCV_ARCH_CLK_H
+#ifndef __ASM_LOONGARCH_ARCH_CLK_H
+#define __ASM_LOONGARCH_ARCH_CLK_H
 
 /* Note: This is a placeholder header for driver compilation. */
 

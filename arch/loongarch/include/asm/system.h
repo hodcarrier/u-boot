@@ -4,8 +4,8 @@
  * Rick Chen, Andes Technology Corporation <rick@andestech.com>
  */
 
-#ifndef __ASM_RISCV_SYSTEM_H
-#define __ASM_RISCV_SYSTEM_H
+#ifndef __ASM_LOONGARCH_SYSTEM_H
+#define __ASM_LOONGARCH_SYSTEM_H
 
 struct event;
 
@@ -19,4 +19,4 @@ struct event;
 /* Hook to set up the CPU (called from SPL too) */
 int riscv_cpu_setup(void *ctx, struct event *event);
 
-#endif	/* __ASM_RISCV_SYSTEM_H */
+#endif	/* __ASM_LOONGARCH_SYSTEM_H */

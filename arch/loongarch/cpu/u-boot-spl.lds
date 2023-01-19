@@ -7,17 +7,16 @@
  * and arch/mips/cpu/u-boot-spl.lds.
  */
 MEMORY { .spl_mem : ORIGIN = IMAGE_TEXT_BASE, LENGTH = IMAGE_MAX_SIZE }
-MEMORY { .bss_mem : ORIGIN = CONFIG_SPL_BSS_START_ADDR, \
-		    LENGTH = CONFIG_SPL_BSS_MAX_SIZE }
+MEMORY { .bss_mem : ORIGIN = CONFIG_SPL_BSS_START_ADDR, LENGTH = CONFIG_SPL_BSS_MAX_SIZE }
 
-OUTPUT_ARCH("riscv")
+OUTPUT_ARCH("loongarch")
 ENTRY(_start)
 
 SECTIONS
 {
 	. = ALIGN(4);
 	.text : {
-		arch/riscv/cpu/start.o	(.text)
+		arch/loongarch/cpu/start.o	(.text)
 		*(.text*)
 	} > .spl_mem
 
