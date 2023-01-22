@@ -87,6 +87,7 @@ ARCHITECTURE_AARCH64  = 0x0000aa64
 ARCHITECTURE_MIPS     = 0x00000100
 ARCHITECTURE_RISCV    = 0xc001d0de
 ARCHITECTURE_PPC64    = 0x407570ff
+ARCHITECTURE_LOONGARCH = 0xc001d0de
 
 ARCH_NAMES = {
     ARCHITECTURE_UNKNOWN  : 'unknown',
@@ -96,6 +97,7 @@ ARCH_NAMES = {
     ARCHITECTURE_MIPS     : 'mips',
     ARCHITECTURE_RISCV    : 'riscv',
     ARCHITECTURE_PPC64    : 'ppc64',
+    ARCHITECTURE_LOONGARCH : 'loongarch',
     }
 
 # File types. Only supported ones are included here
