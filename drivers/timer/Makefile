@@ -22,6 +22,7 @@ obj-$(CONFIG_OMAP_TIMER)	+= omap-timer.o
 obj-$(CONFIG_ORION_TIMER)	+= orion-timer.o
 obj-$(CONFIG_RENESAS_OSTM_TIMER) += ostm_timer.o
 obj-$(CONFIG_RISCV_TIMER) += riscv_timer.o
+obj-$(CONFIG_LOONGARCH_TIMER) += loongarch_timer.o
 obj-$(CONFIG_ROCKCHIP_TIMER) += rockchip_timer.o
 obj-$(CONFIG_SANDBOX_TIMER)	+= sandbox_timer.o
 obj-$(CONFIG_SP804_TIMER)	+= sp804_timer.o

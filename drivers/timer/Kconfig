@@ -223,6 +223,13 @@ config RISCV_TIMER
 	  Select this to enable support for a generic RISC-V S-Mode timer
 	  driver.
 
+config LOONGARCH_TIMER
+	bool "RISC-V timer support"
+	depends on TIMER && LOONGARCH
+	help
+	  Select this to enable support for a generic RISC-V S-Mode timer
+	  driver.
+
 config ROCKCHIP_TIMER
 	bool "Rockchip timer support"
 	depends on TIMER
