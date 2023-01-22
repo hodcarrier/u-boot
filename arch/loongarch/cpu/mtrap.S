@@ -13,6 +13,8 @@
 
 #include <common.h>
 #include <asm/encoding.h>
+#include <asm/regdef.h>
+#include <asm/asm-la.h>
 
 #ifdef CONFIG_32BIT
 #define LREG		lw
@@ -31,74 +33,74 @@
 	.global trap_entry
 trap_entry:
 	addi sp, sp, -32 * REGBYTES
-	SREG x1,   1 * REGBYTES(sp)
-	SREG x2,   2 * REGBYTES(sp)
-	SREG x3,   3 * REGBYTES(sp)
-	SREG x4,   4 * REGBYTES(sp)
-	SREG x5,   5 * REGBYTES(sp)
-	SREG x6,   6 * REGBYTES(sp)
-	SREG x7,   7 * REGBYTES(sp)
-	SREG x8,   8 * REGBYTES(sp)
-	SREG x9,   9 * REGBYTES(sp)
-	SREG x10, 10 * REGBYTES(sp)
-	SREG x11, 11 * REGBYTES(sp)
-	SREG x12, 12 * REGBYTES(sp)
-	SREG x13, 13 * REGBYTES(sp)
-	SREG x14, 14 * REGBYTES(sp)
-	SREG x15, 15 * REGBYTES(sp)
-	SREG x16, 16 * REGBYTES(sp)
-	SREG x17, 17 * REGBYTES(sp)
-	SREG x18, 18 * REGBYTES(sp)
-	SREG x19, 19 * REGBYTES(sp)
-	SREG x20, 20 * REGBYTES(sp)
-	SREG x21, 21 * REGBYTES(sp)
-	SREG x22, 22 * REGBYTES(sp)
-	SREG x23, 23 * REGBYTES(sp)
-	SREG x24, 24 * REGBYTES(sp)
-	SREG x25, 25 * REGBYTES(sp)
-	SREG x26, 26 * REGBYTES(sp)
-	SREG x27, 27 * REGBYTES(sp)
-	SREG x28, 28 * REGBYTES(sp)
-	SREG x29, 29 * REGBYTES(sp)
-	SREG x30, 30 * REGBYTES(sp)
-	SREG x31, 31 * REGBYTES(sp)
-	csrr a0, MODE_PREFIX(cause)
-	csrr a1, MODE_PREFIX(epc)
-	csrr a2, MODE_PREFIX(tval)
+	SREG ra,  sp,  1 * REGBYTES
+	SREG tp,  sp,  2 * REGBYTES
+	SREG sp,  sp,  3 * REGBYTES
+	SREG a0,  sp,  4 * REGBYTES
+	SREG a1,  sp,  5 * REGBYTES
+	SREG a2,  sp,  6 * REGBYTES
+	SREG a3,  sp,  7 * REGBYTES
+	SREG a4,  sp,  8 * REGBYTES
+	SREG a5,  sp,  9 * REGBYTES
+	SREG a6,  sp, 10 * REGBYTES
+	SREG a7,  sp, 11 * REGBYTES
+	SREG t0,  sp, 12 * REGBYTES
+	SREG t1,  sp, 13 * REGBYTES
+	SREG t2,  sp, 14 * REGBYTES
+	SREG t3,  sp, 15 * REGBYTES
+	SREG t4,  sp, 16 * REGBYTES
+	SREG t5,  sp, 17 * REGBYTES
+	SREG t6,  sp, 18 * REGBYTES
+	SREG t7,  sp, 19 * REGBYTES
+	SREG t8,  sp, 20 * REGBYTES
+	SREG u0,  sp, 21 * REGBYTES
+	SREG fp,  sp, 22 * REGBYTES
+	SREG s0,  sp, 23 * REGBYTES
+	SREG s1,  sp, 24 * REGBYTES
+	SREG s2,  sp, 25 * REGBYTES
+	SREG s3,  sp, 26 * REGBYTES
+	SREG s4,  sp, 27 * REGBYTES
+	SREG s5,  sp, 28 * REGBYTES
+	SREG s6,  sp, 29 * REGBYTES
+	SREG s7,  sp, 30 * REGBYTES
+	SREG s8,  sp, 31 * REGBYTES
+	csrrd a0, 5	// MODE_PREFIX(cause)
+	csrrd a1, 7	// MODE_PREFIX(epc)
+	csrrd a2, 8	// MODE_PREFIX(tval)
 	mv a3, sp
 	jal handle_trap
-	csrw MODE_PREFIX(epc), a0
-
-	LREG x1,   1 * REGBYTES(sp)
-	LREG x3,   3 * REGBYTES(sp)
-	LREG x4,   4 * REGBYTES(sp)
-	LREG x5,   5 * REGBYTES(sp)
-	LREG x6,   6 * REGBYTES(sp)
-	LREG x7,   7 * REGBYTES(sp)
-	LREG x8,   8 * REGBYTES(sp)
-	LREG x9,   9 * REGBYTES(sp)
-	LREG x10, 10 * REGBYTES(sp)
-	LREG x11, 11 * REGBYTES(sp)
-	LREG x12, 12 * REGBYTES(sp)
-	LREG x13, 13 * REGBYTES(sp)
-	LREG x14, 14 * REGBYTES(sp)
-	LREG x15, 15 * REGBYTES(sp)
-	LREG x16, 16 * REGBYTES(sp)
-	LREG x17, 17 * REGBYTES(sp)
-	LREG x18, 18 * REGBYTES(sp)
-	LREG x19, 19 * REGBYTES(sp)
-	LREG x20, 20 * REGBYTES(sp)
-	LREG x21, 21 * REGBYTES(sp)
-	LREG x22, 22 * REGBYTES(sp)
-	LREG x23, 23 * REGBYTES(sp)
-	LREG x24, 24 * REGBYTES(sp)
-	LREG x25, 25 * REGBYTES(sp)
-	LREG x26, 26 * REGBYTES(sp)
-	LREG x27, 27 * REGBYTES(sp)
-	LREG x28, 28 * REGBYTES(sp)
-	LREG x29, 29 * REGBYTES(sp)
-	LREG x30, 30 * REGBYTES(sp)
-	LREG x31, 31 * REGBYTES(sp)
-	LREG x2,   2 * REGBYTES(sp)
+	csrwr a0, 7	// MODE_PREFIX(epc), a0
+	LREG ra, sp,  1 * REGBYTES
+	LREG tp, sp,  2 * REGBYTES
+	LREG sp, sp,  3 * REGBYTES
+	LREG a0, sp,  4 * REGBYTES
+	LREG a1, sp,  5 * REGBYTES
+	LREG a2, sp,  6 * REGBYTES
+	LREG a3, sp,  7 * REGBYTES
+	LREG a4, sp,  8 * REGBYTES
+	LREG a5, sp,  9 * REGBYTES
+	LREG a6, sp, 10 * REGBYTES
+	LREG a7, sp, 11 * REGBYTES
+	LREG t0, sp, 12 * REGBYTES
+	LREG t1, sp, 13 * REGBYTES
+	LREG t2, sp, 14 * REGBYTES
+	LREG t3, sp, 15 * REGBYTES
+	LREG t4, sp, 16 * REGBYTES
+	LREG t5, sp, 17 * REGBYTES
+	LREG t6, sp, 18 * REGBYTES
+	LREG t7, sp, 19 * REGBYTES
+	LREG t8, sp, 20 * REGBYTES
+	LREG u0, sp, 21 * REGBYTES
+	LREG fp, sp, 22 * REGBYTES
+	LREG s0, sp, 23 * REGBYTES
+	LREG s1, sp, 24 * REGBYTES
+	LREG s2, sp, 25 * REGBYTES
+	LREG s3, sp, 26 * REGBYTES
+	LREG s4, sp, 27 * REGBYTES
+	LREG s5, sp, 28 * REGBYTES
+	LREG s6, sp, 29 * REGBYTES
+	LREG s7, sp, 30 * REGBYTES
+	LREG s8, sp, 31 * REGBYTES
+	LREG sp, sp,  3 * REGBYTES
 	addi sp, sp, 32 * REGBYTES
-	MODE_PREFIX(ret)
+	jr ra		// MODE_PREFIX(ret)
