@@ -33,6 +33,22 @@
 #define SYM_SIZE		0x18
 #endif
 
+#include <asm/asm-la.h>
+
+.macro csrw a0 a1
+.endm
+.macro csrr a0 a1
+.endm
+.macro csrs a0 a1
+.endm
+
+.macro amoswap.w a0 a1 a2
+.endm
+.macro amoswap.w.rl a0 a1 a2
+.endm
+.macro amoswap.w.aq a0 a1 a2
+.endm
+
 .section .data
 secondary_harts_relocation_error:
 	.ascii "Relocation of secondary harts has failed, error %d\n"
@@ -144,13 +160,13 @@ call_harts_early_init:
 	bnez	tp, secondary_hart_loop
 #endif
 #endif
-	
+
 	mv      a0, s0
 	jal	board_init_f_init_reserve
 
-	SREG	s1, GD_FIRMWARE_FDT_ADDR(u0)
+	SREG	s1, u0,  GD_FIRMWARE_FDT_ADDR
 	/* save the boot hart id to global_data */
-	SREG	tp, GD_BOOT_HART(u0)
+	SREG	tp, u0,  GD_BOOT_HART
 
 #if !CONFIG_IS_ENABLED(XIP)
 #ifdef CONFIG_AVAILABLE_HARTS
@@ -174,9 +190,9 @@ wait_for_gd_init:
 	/* register available harts in the available_harts mask */
 	li	t1, 1
 	sll	t1, t1, tp
-	LREG	t2, GD_AVAILABLE_HARTS(u0)
+	LREG	t2, u0, GD_AVAILABLE_HARTS
 	or	t2, t2, t1
-	SREG	t2, GD_AVAILABLE_HARTS(u0)
+	SREG	t2, u0, GD_AVAILABLE_HARTS
 
 	amoswap.w.rl zero, zero, 0(t0)
 #endif
@@ -207,7 +223,7 @@ spl_clear_bss:
 	beq	t0, t1, spl_stack_gd_setup
 
 spl_clear_bss_loop:
-	SREG	zero, 0(t0)
+	SREG	zero, t0,  0
 	addi	t0, t0, REGBYTES
 	blt	t0, t1, spl_clear_bss_loop
 
@@ -288,9 +304,9 @@ stack_setup:
 	add	t2, t0, t3		/* t2 <- source end address */
 
 copy_loop:
-	LREG	t5, 0(t0)
+	LREG	t5, t0, 0
 	addi	t0, t0, REGBYTES
-	SREG	t5, 0(t1)
+	SREG	t5, t1,  0
 	addi	t1, t1, REGBYTES
 	blt	t0, t2, copy_loop
 
@@ -310,14 +326,14 @@ fix_rela_dyn:
 	j	10f
 
 6:
-	LREG	t5, -(REGBYTES*2)(t1)	/* t5 <-- relocation info:type */
+	LREG	t5, t1, -(REGBYTES*2)	/* t5 <-- relocation info:type */
 	li	t3, R_LOONGARCH_RELATIVE	/* reloc type R_LOONGARCH_RELATIVE */
 	bne	t5, t3, 8f		/* skip non-LOONGARCH_RELOC entries */
-	LREG	t3, -(REGBYTES*3)(t1)
-	LREG	t5, -(REGBYTES)(t1)	/* t5 <-- addend */
+	LREG	t3, t1, -(REGBYTES*3)
+	LREG	t5, t1, -(REGBYTES)	/* t5 <-- addend */
 	add	t5, t5, t6		/* t5 <-- location to fix up in RAM */
 	add	t3, t3, t6		/* t3 <-- location to fix up in RAM */
-	SREG	t5, 0(t3)
+	SREG	t5, t3,  0
 	j	10f
 
 8:
@@ -325,22 +341,22 @@ fix_rela_dyn:
 	add	t4, t4, t6
 
 9:
-	LREG	t5, -(REGBYTES*2)(t1)	/* t5 <-- relocation info:type */
+	LREG	t5, t1, -(REGBYTES*2) 	/* t5 <-- relocation info:type */
 	srli	t0, t5, SYM_INDEX	/* t0 <--- sym table index */
 	andi	t5, t5, 0xFF		/* t5 <--- relocation type */
 	li	t3, RELOC_TYPE
 	bne	t5, t3, 10f		/* skip non-addned entries */
 
-	LREG	t3, -(REGBYTES*3)(t1)
+	LREG	t3, t1, -(REGBYTES*3)
 	li	t5, SYM_SIZE
 	mul	t0, t0, t5
 	add	s5, t4, t0
-	LREG	t0, -(REGBYTES)(t1)	/* t0 <-- addend */
-	LREG	t5, REGBYTES(s5)
+	LREG	t0, t1, -(REGBYTES)	/* t0 <-- addend */
+	LREG	t5, s5, REGBYTES
 	add	t5, t5, t0
 	add	t5, t5, t6		/* t5 <-- location to fix up in RAM */
 	add	t3, t3, t6		/* t3 <-- location to fix up in RAM */
-	SREG	t5, 0(t3)
+	SREG	t5, t3,  0
 10:
 	addi	t1, t1, (REGBYTES*3)
 	ble	t1, t2, 6b
@@ -360,7 +376,7 @@ clear_bss:
 	beq	t0, t1, relocate_secondary_harts
 
 clbss_l:
-	SREG	zero, 0(t0)		/* clear loop... */
+	SREG	zero, t0, 0		/* clear loop... */
 	addi	t0, t0, REGBYTES
 	blt	t0, t1, clbss_l
 
