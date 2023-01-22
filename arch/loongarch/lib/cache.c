@@ -9,7 +9,7 @@
 
 void invalidate_icache_all(void)
 {
-	asm volatile ("fence.i" ::: "memory");
+        asm volatile ("\tibar 0\n"::);
 }
 
 __weak void flush_dcache_all(void)
