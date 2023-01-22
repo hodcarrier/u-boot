@@ -138,7 +138,7 @@ static ulong get_sp(void)
 {
 	ulong ret;
 
-	asm("mv %0, sp" : "=r"(ret) : );
+	asm("move %0, $sp" : "=r"(ret) : );
 	return ret;
 }
 
