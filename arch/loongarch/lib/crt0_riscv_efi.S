@@ -10,7 +10,7 @@
 
 #include <asm-generic/pe.h>
 
-#if __riscv_xlen == 64
+#if __loongarch_grlen == 64
 #define SIZE_LONG	8
 #define SAVE_LONG(reg, idx)	sd	reg, (idx*SIZE_LONG)(sp)
 #define LOAD_LONG(reg, idx)	ld	reg, (idx*SIZE_LONG)(sp)
@@ -68,12 +68,12 @@ optional_header:
 	.long	0				/* SizeOfUninitializedData */
 	.long	_start - ImageBase		/* AddressOfEntryPoint */
 	.long	_start - ImageBase		/* BaseOfCode */
-#if __riscv_xlen == 32
+#if __loongarch_grlen == 32
 	.long	0				/* BaseOfData */
 #endif
 
 extra_header_fields:
-#if __riscv_xlen == 32
+#if __loongarch_grlen == 32
 	.long	0				/* ImageBase */
 #else
 	.quad	0				/* ImageBase */
@@ -97,7 +97,7 @@ extra_header_fields:
 	.long	0				/* CheckSum */
 	.short	IMAGE_SUBSYSTEM_EFI_APPLICATION /* Subsystem */
 	.short	0				/* DllCharacteristics */
-#if __riscv_xlen == 32
+#if __loongarch_grlen == 32
 	.long	0				/* SizeOfStackReserve */
 	.long	0				/* SizeOfStackCommit */
 	.long	0				/* SizeOfHeapReserve */
