@@ -33,7 +33,7 @@ DECLARE_GLOBAL_DATA_PTR;
 #define HTIF_CONSOLE_CMD_GETC	0
 #define HTIF_CONSOLE_CMD_PUTC	1
 
-#if __riscv_xlen == 64
+#if __riscv_xlen == 64 || __loongarch_grlen == 64
 # define TOHOST_CMD(dev, cmd, payload) \
 	(((u64)(dev) << HTIF_DEV_SHIFT) | \
 	 ((u64)(cmd) << HTIF_CMD_SHIFT) | \
