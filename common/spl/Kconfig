@@ -111,7 +111,7 @@ config SPL_PAD_TO
 config SPL_HAS_BSS_LINKER_SECTION
 	depends on SPL_FRAMEWORK
 	bool "Use a specific address for the BSS via the linker script"
-	default y if ARCH_SUNXI || ARCH_MX6 || ARCH_OMAP2PLUS || MIPS || RISCV || ARCH_ZYNQMP
+	default y if ARCH_SUNXI || ARCH_MX6 || ARCH_OMAP2PLUS || LOONGARCH || MIPS || RISCV || ARCH_ZYNQMP
 
 config SPL_BSS_START_ADDR
 	hex "Link address for the BSS within the SPL binary"
@@ -149,7 +149,7 @@ endchoice
 config SPL_BSS_MAX_SIZE
 	hex "Maximum size in memory allocated to the SPL BSS"
 	depends on SPL_BSS_LIMIT
-	default 0x100000 if ARCH_MX6 || RISCV
+	default 0x100000 if ARCH_MX6 || RISCV || LOONGARCH
 	default 0x80000 if ARCH_OMAP2PLUS || ARCH_SUNXI
 	help
 	  When non-zero, the linker checks that the actual memory used by SPL
@@ -340,7 +340,7 @@ config SPL_SYS_MALLOC_SIMPLE
 
 config SPL_SHARES_INIT_SP_ADDR
 	bool "SPL and U-Boot use the same initial stack pointer location"
-	depends on (ARM || ARCH_JZ47XX || MICROBLAZE || RISCV) && SPL_FRAMEWORK
+	depends on (ARM || ARCH_JZ47XX || MICROBLAZE || RISCV || LOONGARCH) && SPL_FRAMEWORK
 	default n if ARCH_SUNXI || ARCH_MX6 || ARCH_MX7
 	default y
 	help
@@ -350,7 +350,7 @@ config SPL_SHARES_INIT_SP_ADDR
 
 config SPL_STACK
 	hex "Initial stack pointer location"
-	depends on (ARM || ARCH_JZ47XX || MICROBLAZE || RISCV) && SPL_FRAMEWORK
+	depends on (ARM || ARCH_JZ47XX || MICROBLAZE || RISCV || LOONGARCH) && SPL_FRAMEWORK
 	depends on !SPL_SHARES_INIT_SP_ADDR
 	default 0x946bb8 if ARCH_MX7
 	default 0x93ffb8 if ARCH_MX6 && MX6_OCRAM_256KB

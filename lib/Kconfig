@@ -80,7 +80,7 @@ config SPL_LIB_UUID
 
 config SEMIHOSTING
 	bool "Support semihosting"
-	depends on ARM || RISCV
+	depends on ARM || RISCV || LOONGARCH
 	help
 	  Semihosting is a method for a target to communicate with a host
 	  debugger. It uses special instructions which the debugger will trap
@@ -93,7 +93,7 @@ config SEMIHOSTING
 
 config SEMIHOSTING_FALLBACK
 	bool "Recover gracefully when semihosting fails"
-	depends on SEMIHOSTING && (ARM64 || RISCV)
+	depends on SEMIHOSTING && (ARM64 || RISCV || LOONGARCH)
 	default y
 	help
 	  Normally, if U-Boot makes a semihosting call and no debugger is
@@ -103,7 +103,7 @@ config SEMIHOSTING_FALLBACK
 
 config SPL_SEMIHOSTING
 	bool "Support semihosting in SPL"
-	depends on SPL && (ARM || RISCV)
+	depends on SPL && (ARM || RISCV || LOONGARCH)
 	help
 	  Semihosting is a method for a target to communicate with a host
 	  debugger. It uses special instructions which the debugger will trap
@@ -116,7 +116,7 @@ config SPL_SEMIHOSTING
 
 config SPL_SEMIHOSTING_FALLBACK
 	bool "Recover gracefully when semihosting fails in SPL"
-	depends on SPL_SEMIHOSTING && (ARM64 || RISCV)
+	depends on SPL_SEMIHOSTING && (ARM64 || RISCV || LOONGARCH)
 	select ARMV8_SPL_EXCEPTION_VECTORS if ARM64
 	default y
 	help
@@ -1059,7 +1059,7 @@ config LIB_ELF
 config LMB
 	bool "Enable the logical memory blocks library (lmb)"
 	default y if ARC || ARM || M68K || MICROBLAZE || MIPS || \
-		     NIOS2 || PPC || RISCV || SANDBOX || SH || X86 || XTENSA
+		     NIOS2 || PPC || RISCV || LOONGARCH || SANDBOX || SH || X86 || XTENSA
 	help
 	  Support the library logical memory blocks.
 
