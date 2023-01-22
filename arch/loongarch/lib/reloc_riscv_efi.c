@@ -40,7 +40,7 @@
 
 #include <elf.h>
 
-#if __riscv_xlen == 64
+#if __loongarch_grlen == 64
 #define Elf_Dyn		Elf64_Dyn
 #define Elf_Rela	Elf64_Rela
 #define ELF_R_TYPE	ELF64_R_TYPE
@@ -82,7 +82,7 @@ efi_status_t EFIAPI _relocate(long ldbase, Elf_Dyn *dyn)
 	while (relsz > 0) {
 		/* apply the relocs */
 		switch (ELF_R_TYPE(rel->r_info)) {
-		case R_LOONGARCH_RELATIVE:
+		case R_LARCH_RELATIVE:
 			addr = (ulong *)(ldbase + rel->r_offset);
 			*addr = ldbase + rel->r_addend;
 			break;
