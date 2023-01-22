@@ -694,6 +694,11 @@ unsigned long elf_hash(const unsigned char *name);
 #define R_AARCH64_NONE		0	/* No relocation */
 #define R_AARCH64_RELATIVE	1027	/* Adjust by program base */
 
+/* LoongArch relocations */
+#define R_LARCH_32		1
+#define R_LARCH_64		2
+#define R_LARCH_RELATIVE	3
+
 /* RISC-V relocations */
 #define R_RISCV_32		1
 #define R_RISCV_64		2
