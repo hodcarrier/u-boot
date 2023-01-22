@@ -44,6 +44,14 @@ static int machines[] = {
 	IMAGE_FILE_MACHINE_I386,
 #endif
 
+#if defined(__loongarch__) && (__loongarch_grlen == 32)
+	IMAGE_FILE_MACHINE_LOONGARCH32,
+#endif
+
+#if defined(__loongarch__) && (__loongarch_grlen == 64)
+	IMAGE_FILE_MACHINE_LOONGARCH64,
+#endif
+
 #if defined(__riscv) && (__riscv_xlen == 32)
 	IMAGE_FILE_MACHINE_RISCV32,
 #endif
