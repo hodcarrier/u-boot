@@ -12,12 +12,12 @@
 #define __ASM_STR(x)	#x
 #endif
 
-#if __riscv_xlen == 64
+#if __loongarch_grlen == 64
 #define __REG_SEL(a, b)	__ASM_STR(a)
-#elif __riscv_xlen == 32
+#elif __loongarch_grlen == 32
 #define __REG_SEL(a, b)	__ASM_STR(b)
 #else
-#error "Unexpected __riscv_xlen"
+#error "Unexpected __loongarch_grlen"
 #endif
 
 #define REG_L		__REG_SEL(ld, lw)
@@ -59,8 +59,8 @@
 
 #if (__SIZEOF_SHORT__ == 2)
 #define LOONGARCH_SHORT		__ASM_STR(.half)
-#define LOONGARCH_SZSHORT		__ASM_STR(2)
-#define LOONGARCH_LGSHORT		__ASM_STR(1)
+#define LOONGARCH_SZSHORT	__ASM_STR(2)
+#define LOONGARCH_LGSHORT	__ASM_STR(1)
 #else
 #error "Unexpected __SIZEOF_SHORT__"
 #endif
