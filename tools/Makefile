@@ -229,6 +229,7 @@ hostprogs-$(CONFIG_ARCH_MVEBU) += kwboot
 hostprogs-y += proftool
 hostprogs-$(CONFIG_STATIC_RELA) += relocate-rela
 hostprogs-$(CONFIG_RISCV) += prelink-riscv
+hostprogs-$(CONFIG_LOONGARCH) += prelink-loongarch
 
 hostprogs-$(CONFIG_ARCH_OCTEON) += update_octeon_header
 update_octeon_header-objs := update_octeon_header.o lib/crc32.o
