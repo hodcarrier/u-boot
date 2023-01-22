@@ -138,7 +138,7 @@
 	(FETCH) ? ((SUPERVISOR) ? PTE_SX(PTE) : PTE_UX(PTE)) : \
 	((SUPERVISOR) ? PTE_SR(PTE) : PTE_UR(PTE)))
 
-#ifdef __riscv
+#ifdef __loongarch__
 
 #ifdef CONFIG_64BIT
 # define MSTATUS_SD MSTATUS64_SD
@@ -157,6 +157,6 @@
 #define LOONGARCH_PGSHIFT 12
 #define LOONGARCH_PGSIZE BIT(LOONGARCH_PGSHIFT)
 
-#endif /* __riscv */
+#endif /* __loongarch__ */
 
 #endif /* LOONGARCH_CSR_ENCODING_H */
