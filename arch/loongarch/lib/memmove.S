@@ -2,6 +2,7 @@
 
 #include <linux/linkage.h>
 #include <asm/asm.h>
+#include <asm/asm-la.h>
 
 ENTRY(__memmove)
 WEAK(memmove)
@@ -45,13 +46,14 @@ WEAK(memmove)
 	/*
 	 * Bytewise copy first to align t0 to word boundary.
 	 */
-	andi	a2, a0, ~(SZREG-1)
+	li	t1, ~(SZREG-1)
+	and	a2, a0, t1
 	beq	a0, a2, 2f
 1:
 	addi	a1, a1, -1
-	lb	a5, 0(a1)
+	lb	a5, a1, 0
 	addi	a0, a0, -1
-	sb	a5, 0(a0)
+	sb	a5, a0, 0
 	bne	a0, a2, 1b
 2:
 
@@ -68,9 +70,9 @@ WEAK(memmove)
 	bleu	a0, t0, 2f
 1:
 	addi	a1, a1, -SZREG
-	REG_L	a5, 0(a1)
+	REG_L	a5, a1, 0
 	addi	a0, a0, -SZREG
-	REG_S	a5, 0(a0)
+	REG_S	a5, a0, 0
 	bgtu	a0, t0, 1b
 2:
 	addi	t0, t0, -(SZREG-1)
@@ -82,9 +84,9 @@ WEAK(memmove)
 	beq	a0, t0, 2f
 1:
 	addi	a1, a1, -1
-	lb	a5, 0(a1)
+	lb	a5, a1, 0
 	addi	a0, a0, -1
-	sb	a5, 0(a0)
+	sb	a5, a0, 0
 	bne	a0, t0, 1b
 2:
 
@@ -104,19 +106,20 @@ WEAK(memmove)
 	sub	t4, x0, t3 /* negate is okay as shift will only look at LSBs */
 
 	/* Load the initial value and align a1 */
-	andi	a1, a1, ~(SZREG-1)
-	REG_L	a5, 0(a1)
+	li	t1, ~(SZREG-1)
+	and	a1, a1, t1
+	REG_L	a5, a1, 0
 
 	addi	t0, t0, SZREG-1
 	/* At least one iteration will be executed here, no check */
 1:
 	sll	a4, a5, t4
 	addi	a1, a1, -SZREG
-	REG_L	a5, 0(a1)
+	REG_L	a5, a1, 0
 	srl	a2, a5, t3
 	or	a2, a2, a4
 	addi	a0, a0, -SZREG
-	REG_S	a2, 0(a0)
+	REG_S	a2, a0, 0
 	bgtu	a0, t0, 1b
 
 	/* Update pointers to correct value */
