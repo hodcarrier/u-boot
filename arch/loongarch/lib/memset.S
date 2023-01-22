@@ -6,6 +6,8 @@
 
 #include <linux/linkage.h>
 #include <asm/asm.h>
+#include <asm/asm-la.h>
+
 
 /* void *memset(void *, int, size_t) */
 ENTRY(__memset)
@@ -21,12 +23,14 @@ WEAK(memset)
 	 * greater than or equal to start address
 	 */
 	addi a3, t0, SZREG-1
-	andi a3, a3, ~(SZREG-1)
+
+	li t1, ~(SZREG-1)
+	and a3, a3, t1
 	beq a3, t0, 2f  /* Skip if already aligned */
 	/* Handle initial misalignment */
 	sub a4, a3, t0
 1:
-	sb a1, 0(t0)
+	sb a1, t0, 0
 	addi t0, t0, 1
 	bltu t0, a3, 1b
 	sub a2, a2, a4  /* Update count */
@@ -44,7 +48,8 @@ WEAK(memset)
 #endif
 
 	/* Calculate end address */
-	andi a4, a2, ~(SZREG-1)
+	li t1, ~(SZREG-1)
+	and a4, a2, t1
 	add a3, t0, a4
 
 	andi a4, a4, 31*SZREG  /* Calculate remainder */
@@ -64,48 +69,48 @@ WEAK(memset)
 	add a5, a5, a4
 	jr a5
 3:
-	REG_S a1,        0(t0)
-	REG_S a1,    SZREG(t0)
-	REG_S a1,  2*SZREG(t0)
-	REG_S a1,  3*SZREG(t0)
-	REG_S a1,  4*SZREG(t0)
-	REG_S a1,  5*SZREG(t0)
-	REG_S a1,  6*SZREG(t0)
-	REG_S a1,  7*SZREG(t0)
-	REG_S a1,  8*SZREG(t0)
-	REG_S a1,  9*SZREG(t0)
-	REG_S a1, 10*SZREG(t0)
-	REG_S a1, 11*SZREG(t0)
-	REG_S a1, 12*SZREG(t0)
-	REG_S a1, 13*SZREG(t0)
-	REG_S a1, 14*SZREG(t0)
-	REG_S a1, 15*SZREG(t0)
-	REG_S a1, 16*SZREG(t0)
-	REG_S a1, 17*SZREG(t0)
-	REG_S a1, 18*SZREG(t0)
-	REG_S a1, 19*SZREG(t0)
-	REG_S a1, 20*SZREG(t0)
-	REG_S a1, 21*SZREG(t0)
-	REG_S a1, 22*SZREG(t0)
-	REG_S a1, 23*SZREG(t0)
-	REG_S a1, 24*SZREG(t0)
-	REG_S a1, 25*SZREG(t0)
-	REG_S a1, 26*SZREG(t0)
-	REG_S a1, 27*SZREG(t0)
-	REG_S a1, 28*SZREG(t0)
-	REG_S a1, 29*SZREG(t0)
-	REG_S a1, 30*SZREG(t0)
-	REG_S a1, 31*SZREG(t0)
-	addi t0, t0, 32*SZREG
-	bltu t0, a3, 3b
-	andi a2, a2, SZREG-1  /* Update count */
+	REG_S a1, t0, SZREG*0
+	REG_S a1, t0, SZREG*1
+	REG_S a1, t0, SZREG*2
+	REG_S a1, t0, SZREG*3
+	REG_S a1, t0, SZREG*4
+	REG_S a1, t0, SZREG*5
+	REG_S a1, t0, SZREG*6
+	REG_S a1, t0, SZREG*7
+	REG_S a1, t0, SZREG*8
+	REG_S a1, t0, SZREG*9
+	REG_S a1, t0, SZREG*10
+	REG_S a1, t0, SZREG*11
+	REG_S a1, t0, SZREG*12
+	REG_S a1, t0, SZREG*13
+	REG_S a1, t0, SZREG*14
+	REG_S a1, t0, SZREG*15
+	REG_S a1, t0, SZREG*16
+	REG_S a1, t0, SZREG*17
+	REG_S a1, t0, SZREG*18
+	REG_S a1, t0, SZREG*19
+	REG_S a1, t0, SZREG*20
+	REG_S a1, t0, SZREG*21
+	REG_S a1, t0, SZREG*22
+	REG_S a1, t0, SZREG*23
+	REG_S a1, t0, SZREG*24
+	REG_S a1, t0, SZREG*25
+	REG_S a1, t0, SZREG*26
+	REG_S a1, t0, SZREG*27
+	REG_S a1, t0, SZREG*28
+	REG_S a1, t0, SZREG*29
+	REG_S a1, t0, SZREG*30
+	REG_S a1, t0, SZREG*31
+	addi  t0, t0, SZREG*32
+	bltu  t0, a3, 3b
+	andi  a2, a2, SZREG-1  /* Update count */
 
 4:
 	/* Handle trailing misalignment */
 	beqz a2, 6f
 	add a3, t0, a2
 5:
-	sb a1, 0(t0)
+	sb a1, t0, 0
 	addi t0, t0, 1
 	bltu t0, a3, 5b
 6:
