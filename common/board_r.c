@@ -103,7 +103,7 @@ static int initr_reloc(void)
 	return 0;
 }
 
-#if defined(CONFIG_ARM) || defined(CONFIG_RISCV)
+#if defined(CONFIG_ARM) || defined(CONFIG_LOONGARCH) || defined(CONFIG_RISCV)
 /*
  * Some of these functions are needed purely because the functions they
  * call return void. If we change them to return 0, these stubs can go away.
@@ -125,6 +125,8 @@ static int initr_reloc_global_data(void)
 {
 #ifdef __ARM__
 	monitor_flash_len = _end - __image_copy_start;
+#elif defined(CONFIG_LOONGARCH)
+	monitor_flash_len = (ulong)&_end - (ulong)&_start;
 #elif defined(CONFIG_RISCV)
 	monitor_flash_len = (ulong)&_end - (ulong)&_start;
 #elif !defined(CONFIG_SANDBOX) && !defined(CONFIG_NIOS2)
@@ -592,7 +594,7 @@ static init_fnc_t init_sequence_r[] = {
 	initr_reloc,
 	event_init,
 	/* TODO: could x86/PPC have this also perhaps? */
-#if defined(CONFIG_ARM) || defined(CONFIG_RISCV)
+#if defined(CONFIG_ARM) || defined(CONFIG_LOONGARCH) || defined(CONFIG_RISCV)
 	initr_caches,
 	/* Note: For Freescale LS2 SoCs, new MMU table is created in DDR.
 	 *	 A temporary mapping of IFC high region is since removed,
@@ -625,7 +627,7 @@ static init_fnc_t init_sequence_r[] = {
 #ifdef CONFIG_ADDR_MAP
 	init_addr_map,
 #endif
-#if defined(CONFIG_ARM) || defined(CONFIG_RISCV) || defined(CONFIG_SANDBOX)
+#if defined(CONFIG_ARM) || defined(CONFIG_LOONGARCH) || defined(CONFIG_SANDBOX)
 	board_init,	/* Setup chipselects */
 #endif
 	/*
