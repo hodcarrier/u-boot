@@ -6,6 +6,8 @@
 #include <linux/linkage.h>
 #include <asm/asm.h>
 
+#include <asm/asm-la.h>
+
 /* void *memcpy(void *, const void *, size_t) */
 ENTRY(__memcpy)
 WEAK(memcpy)
@@ -35,12 +37,13 @@ WEAK(memcpy)
 	 * Bytewise copy first to align a0 to word boundary.
 	 */
 	addi	a2, a0, SZREG-1
-	andi	a2, a2, ~(SZREG-1)
+	li	t1, ~(SZREG-1)
+	and	a2, a2, t1
 	beq	a0, a2, 2f
 1:
-	lb	a5, 0(a1)
+	lb	a5, a1, 0
 	addi	a1, a1, 1
-	sb	a5, 0(a0)
+	sb	a5, a0, 0
 	addi	a0, a0, 1
 	bne	a0, a2, 1b
 2:
@@ -57,40 +60,40 @@ WEAK(memcpy)
 	addi	t0, t0, -(16*SZREG-1)
 	bgeu	a0, t0, 2f
 1:
-	REG_L	a2,        0(a1)
-	REG_L	a3,    SZREG(a1)
-	REG_L	a4,  2*SZREG(a1)
-	REG_L	a5,  3*SZREG(a1)
-	REG_L	a6,  4*SZREG(a1)
-	REG_L	a7,  5*SZREG(a1)
-	REG_L	t1,  6*SZREG(a1)
-	REG_L	t2,  7*SZREG(a1)
-	REG_L	t3,  8*SZREG(a1)
-	REG_L	t4,  9*SZREG(a1)
-	REG_L	t5, 10*SZREG(a1)
-	REG_S	a2,        0(a0)
-	REG_S	a3,    SZREG(a0)
-	REG_S	a4,  2*SZREG(a0)
-	REG_S	a5,  3*SZREG(a0)
-	REG_S	a6,  4*SZREG(a0)
-	REG_S	a7,  5*SZREG(a0)
-	REG_S	t1,  6*SZREG(a0)
-	REG_S	t2,  7*SZREG(a0)
-	REG_S	t3,  8*SZREG(a0)
-	REG_S	t4,  9*SZREG(a0)
-	REG_S	t5, 10*SZREG(a0)
-	REG_L	a2, 11*SZREG(a1)
-	REG_L	a3, 12*SZREG(a1)
-	REG_L	a4, 13*SZREG(a1)
-	REG_L	a5, 14*SZREG(a1)
-	REG_L	a6, 15*SZREG(a1)
-	addi	a1, a1, 16*SZREG
-	REG_S	a2, 11*SZREG(a0)
-	REG_S	a3, 12*SZREG(a0)
-	REG_S	a4, 13*SZREG(a0)
-	REG_S	a5, 14*SZREG(a0)
-	REG_S	a6, 15*SZREG(a0)
-	addi	a0, a0, 16*SZREG
+	REG_L	a2, a1, 0
+	REG_L	a3, a1, SZREG
+	REG_L	a4, a1, SZREG*2
+	REG_L	a5, a1, SZREG*3
+	REG_L	a6, a1, SZREG*4
+	REG_L	a7, a1, SZREG*5
+	REG_L	t1, a1, SZREG*6
+	REG_L	t2, a1, SZREG*7
+	REG_L	t3, a1, SZREG*8
+	REG_L	t4, a1, SZREG*9
+	REG_L	t5, a1, SZREG*10
+	REG_S	a2, a0, 0
+	REG_S	a3, a0, SZREG
+	REG_S	a4, a0, SZREG*2
+	REG_S	a5, a0, SZREG*3
+	REG_S	a6, a0, SZREG*4
+	REG_S	a7, a0, SZREG*5
+	REG_S	t1, a0, SZREG*6
+	REG_S	t2, a0, SZREG*7
+	REG_S	t3, a0, SZREG*8
+	REG_S	t4, a0, SZREG*9
+	REG_S	t5, a0, SZREG*10
+	REG_L	a2, a1, SZREG*11
+	REG_L	a3, a1, SZREG*12
+	REG_L	a4, a1, SZREG*13
+	REG_L	a5, a1, SZREG*14
+	REG_L	a6, a1, SZREG*15
+	addi	a1, a1, SZREG*16
+	REG_S	a2, a0, SZREG*11
+	REG_S	a3, a0, SZREG*12
+	REG_S	a4, a0, SZREG*13
+	REG_S	a5, a0, SZREG*14
+	REG_S	a6, a0, SZREG*15
+	addi	a0, a0, SZREG*16
 	bltu	a0, t0, 1b
 2:
 	/* Post-loop increment by 16*SZREG-1 and pre-loop decrement by SZREG-1 */
@@ -99,9 +102,9 @@ WEAK(memcpy)
 	/* Wordwise copy */
 	bgeu	a0, t0, 2f
 1:
-	REG_L	a5, 0(a1)
+	REG_L	a5, a1, 0
 	addi	a1, a1, SZREG
-	REG_S	a5, 0(a0)
+	REG_S	a5, a0, 0
 	addi	a0, a0, SZREG
 	bltu	a0, t0, 1b
 2:
@@ -113,9 +116,9 @@ WEAK(memcpy)
 	 */
 	beq	a0, t0, 2f
 1:
-	lb	a5, 0(a1)
+	lb	a5, a1, 0
 	addi	a1, a1, 1
-	sb	a5, 0(a0)
+	sb	a5, a0, 0
 	addi	a0, a0, 1
 	bne	a0, t0, 1b
 2:
@@ -136,18 +139,19 @@ WEAK(memcpy)
 	sub	t4, x0, t3 /* negate is okay as shift will only look at LSBs */
 
 	/* Load the initial value and align a1 */
-	andi	a1, a1, ~(SZREG-1)
-	REG_L	a5, 0(a1)
+	li	t1, ~(SZREG-1)
+	and	a1, a1, t1
+	REG_L	a5, a1, 0
 
 	addi	t0, t0, -(SZREG-1)
 	/* At least one iteration will be executed here, no check */
 1:
 	srl	a4, a5, t3
-	REG_L	a5, SZREG(a1)
+	REG_L	a5, a1, SZREG
 	addi	a1, a1, SZREG
 	sll	a2, a5, t4
 	or	a2, a2, a4
-	REG_S	a2, 0(a0)
+	REG_S	a2, a0, 0
 	addi	a0, a0, SZREG
 	bltu	a0, t0, 1b
 
