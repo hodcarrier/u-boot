@@ -21,14 +21,14 @@
 #define LREG			lw
 #define SREG			sw
 #define REGBYTES		4
-#define RELOC_TYPE		R_LOONGARCH_32
+#define RELOC_TYPE		R_LARCH_32
 #define SYM_INDEX		0x8
 #define SYM_SIZE		0x10
 #else
 #define LREG			ld
 #define SREG			sd
 #define REGBYTES		8
-#define RELOC_TYPE		R_LOONGARCH_64
+#define RELOC_TYPE		R_LARCH_64
 #define SYM_INDEX		0x20
 #define SYM_SIZE		0x18
 #endif
@@ -327,7 +327,7 @@ fix_rela_dyn:
 
 6:
 	LREG	t5, t1, -(REGBYTES*2)	/* t5 <-- relocation info:type */
-	li	t3, R_LOONGARCH_RELATIVE	/* reloc type R_LOONGARCH_RELATIVE */
+	li	t3, R_LARCH_RELATIVE	/* reloc type R_LARCH_RELATIVE */
 	bne	t5, t3, 8f		/* skip non-LOONGARCH_RELOC entries */
 	LREG	t3, t1, -(REGBYTES*3)
 	LREG	t5, t1, -(REGBYTES)	/* t5 <-- addend */
