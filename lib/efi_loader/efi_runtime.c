@@ -75,6 +75,25 @@ struct dyn_sym {
 #else
 #error unknown riscv target
 #endif
+#elif defined(__loongarch__)
+#define R_RELATIVE	R_LARCH_RELATIVE
+#define R_MASK		0xffULL
+#define IS_RELA		1
+struct dyn_sym {
+	ulong foo1;
+	ulong addr;
+	u32 foo2;
+	u32 foo3;
+};
+#if (__loongarch_grlen == 32)
+#define R_ABSOLUTE	R_LARCH_32
+#define SYM_INDEX	8
+#elif (__loongarch_grlen == 64)
+#define R_ABSOLUTE	R_LARCH_64
+#define SYM_INDEX	32
+#else
+#error unknown loongarch target
+#endif
 #else
 #error Need to add relocation awareness
 #endif
