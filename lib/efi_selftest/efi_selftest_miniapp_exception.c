@@ -32,6 +32,8 @@ efi_status_t EFIAPI efi_main(efi_handle_t handle,
 	 * 0xde..	is undefined in Thumb mode
 	 */
 	asm volatile (".word 0xe7f7defb\n");
+#elif defined(CONFIG_LOONGARCH)
+	asm volatile (".word 0xffffffff\n");
 #elif defined(CONFIG_RISCV)
 	asm volatile (".word 0xffffffff\n");
 #elif defined(CONFIG_X86)
