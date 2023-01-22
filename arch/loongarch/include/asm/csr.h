@@ -69,7 +69,7 @@
 #endif
 
 /* SCAUSE */
-#define SCAUSE_IRQ_FLAG		(_AC(1, UL) << (__riscv_xlen - 1))
+#define SCAUSE_IRQ_FLAG		(_AC(1, UL) << (__loongarch_grlen - 1))
 
 #define IRQ_U_SOFT		0
 #define IRQ_S_SOFT		1
@@ -146,6 +146,18 @@
 
 #ifndef __ASSEMBLY__
 
+#if defined(__loongarch__)
+
+#define csr_swap(csr, val)       ({do{}while(0);})
+#define csr_read(csr)            ({do{}while(0);})
+#define csr_write(csr, val)      ({do{}while(0);})
+#define csr_read_set(csr, val)   ({do{}while(0);})
+#define csr_set(csr, val)        ({do{}while(0);})
+#define csr_read_clear(csr, val) ({do{}while(0);})
+#define csr_clear(csr, val)      ({do{}while(0);})
+
+#else
+
 #define csr_swap(csr, val)					\
 ({								\
 	unsigned long __v = (unsigned long)(val);		\
@@ -205,6 +217,7 @@
 			      : : "rK" (__v)			\
 			      : "memory");			\
 })
+#endif /* __loongarch__ */
 
 #endif /* __ASSEMBLY__ */
 
