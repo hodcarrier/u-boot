@@ -15,8 +15,7 @@
 
 #define nop()		__asm__ __volatile__ ("nop")
 
-#define LOONGARCH_FENCE(p, s) \
-	__asm__ __volatile__ ("fence " #p "," #s : : : "memory")
+#define LOONGARCH_FENCE(p, s) __asm__ __volatile__ ("dbar 0" : : : "memory")
 
 /* These barriers need to enforce ordering on both devices or memory. */
 #define mb()		LOONGARCH_FENCE(iorw,iorw)
