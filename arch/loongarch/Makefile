@@ -31,7 +31,7 @@ ifeq ($(CONFIG_CMODEL_LARGE),y)
 	CMODEL = large
 endif
 
-
+# https://loongson.github.io/LoongArch-Documentation/LoongArch-ELF-ABI-CN.html
 LOONGARCH_MARCH = $(ARCH_BASE)$(ARCH_A)$(ARCH_F)$(ARCH_D)$(ARCH_C)
 ABI = $(ABI_BASE)$(ABI_D)
 
