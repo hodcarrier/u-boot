@@ -29,7 +29,7 @@
 	.text
 
 	/* trap entry */
-	.align 2
+	.align 12
 	.global trap_entry
 trap_entry:
 	addi sp, sp, -32 * REGBYTES
@@ -64,11 +64,11 @@ trap_entry:
 	SREG s6,  sp, 29 * REGBYTES
 	SREG s7,  sp, 30 * REGBYTES
 	SREG s8,  sp, 31 * REGBYTES
-	csrrd a0, 5	// MODE_PREFIX(cause)
-	csrrd a1, 7	// MODE_PREFIX(epc)
-	csrrd a2, 8	// MODE_PREFIX(tval)
-	mv a3, sp
-	jal handle_trap
+	csrrd a0, 0x05	// ESTAT MODE_PREFIX(cause)
+	csrrd a1, 0x07	// BADV  MODE_PREFIX(epc)
+	csrrd a2, 0x42	// TVAL  MODE_PREFIX(tval)
+	move a3, sp
+	bl handle_trap
 	csrwr a0, 7	// MODE_PREFIX(epc), a0
 	LREG ra, sp,  1 * REGBYTES
 	LREG tp, sp,  2 * REGBYTES
@@ -103,4 +103,4 @@ trap_entry:
 	LREG s8, sp, 31 * REGBYTES
 	LREG sp, sp,  3 * REGBYTES
 	addi sp, sp, 32 * REGBYTES
-	jr ra		// MODE_PREFIX(ret)
+	ertn
