@@ -16,38 +16,25 @@
 #include <system-constants.h>
 #include <asm/encoding.h>
 #include <generated/asm-offsets.h>
+#include <asm/regdef.h>
 
 #ifdef CONFIG_32BIT
-#define LREG			lw
-#define SREG			sw
+#define LREG			ld.w
+#define SREG			st.w
 #define REGBYTES		4
 #define RELOC_TYPE		R_LARCH_32
 #define SYM_INDEX		0x8
 #define SYM_SIZE		0x10
 #else
-#define LREG			ld
-#define SREG			sd
+#define LREG			ld.d
+#define SREG			st.d
 #define REGBYTES		8
 #define RELOC_TYPE		R_LARCH_64
 #define SYM_INDEX		0x20
 #define SYM_SIZE		0x18
 #endif
 
-#include <asm/asm-la.h>
 
-.macro csrw a0 a1
-.endm
-.macro csrr a0 a1
-.endm
-.macro csrs a0 a1
-.endm
-
-.macro amoswap.w a0 a1 a2
-.endm
-.macro amoswap.w.rl a0 a1 a2
-.endm
-.macro amoswap.w.aq a0 a1 a2
-.endm
 
 .section .data
 secondary_harts_relocation_error:
@@ -56,74 +43,80 @@ secondary_harts_relocation_error:
 .section .text
 .globl _start
 _start:
+	la	a1, __dtb_dt_begin		// HACK: embedded fdt address
 #if CONFIG_IS_ENABLED(LOONGARCH_MMODE)
-	csrr	a0, CSR_MHARTID
+	csrrd	a0, 0x20			// CPUID
 #endif
+
+
 
 	/*
 	 * Save hart id and dtb pointer. The thread pointer register is not
 	 * modified by C code. It is used by secondary_hart_loop.
 	 */
-	mv	tp, a0
-	mv	s1, a1
+	move	tp, a0
+	move	s1, a1
 
 	/*
 	 * Set the global data pointer to a known value in case we get a very
 	 * early trap. The global data pointer will be set its actual value only
 	 * after it has been initialized.
 	 */
-	mv	u0, zero
+	move	u0, zero
 
 	/*
 	 * Set the trap handler. This must happen after initializing u0 because
 	 * the handler may use it.
 	 */
 	la	t0, trap_entry
-	csrw	MODE_PREFIX(tvec), t0
+	csrwr	t0, 0xC				// EENTRY
 
 	/*
 	 * Mask all interrupts. Interrupts are disabled globally (in m/sstatus)
 	 * for U-Boot, but we will need to read m/sip to determine if we get an
 	 * IPI
 	 */
-	csrw	MODE_PREFIX(ie), zero
+	ori	t0, zero, 1<<2			// IE bit ??
+	csrxchg	zero, t0, 0			// CRMD   ??
 
 #if CONFIG_IS_ENABLED(SMP)
 	/* check if hart is within range */
 	/* tp: hart id */
-	li	t0, CONFIG_NR_CPUS
+	ori	t0, zero, CONFIG_NR_CPUS
 	bge	tp, t0, hart_out_of_bounds_loop
 
 	/* set xSIE bit to receive IPIs */
 #if CONFIG_IS_ENABLED(LOONGARCH_MMODE)
-	li	t0, MIE_MSIE
+	ori	t0, zero, MIE_MSIE
 #else
-	li	t0, SIE_SSIE
+	ori	t0, zero, SIE_SSIE
 #endif
-	csrs	MODE_PREFIX(ie), t0
+	move	t0, zero			// TODO: what is xSIE ?
+	csrxchg	zero, t0, 0			// CRMD, no effort
 #endif
 
 /*
  * Set stackpointer in internal/ex RAM to call board_init_f
  */
 call_board_init_f:
-	li	t0, -16
 #if defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_STACK)
-	li	t1, CONFIG_SPL_STACK
+	li	sp, CONFIG_SPL_STACK
 #else
-	li	t1, SYS_INIT_SP_ADDR
+	li.d	sp, SYS_INIT_SP_ADDR
 #endif
-	and	sp, t1, t0		/* force 16 byte alignment */
+	ori	t0, zero, 15
+	andn	sp, sp, t0		/* force 16 byte alignment */
+
 
 call_board_init_f_0:
-	mv	a0, sp
-	jal	board_init_f_alloc_reserve
+	move	a0, sp
+	bl	board_init_f_alloc_reserve
 
 	/*
 	 * Save global data pointer for later. We don't set it here because it
 	 * is not initialized yet.
 	 */
-	mv	s0, a0
+	move	s0, a0
 
 	/* setup stack */
 #if CONFIG_IS_ENABLED(SMP)
@@ -131,21 +124,22 @@ call_board_init_f_0:
 	slli	t0, tp, CONFIG_STACK_SIZE_SHIFT
 	sub	sp, a0, t0
 #else
-	mv	sp, a0
+	move	sp, a0
 #endif
 
 	/* Configure proprietary settings and customized CSRs of harts */
 call_harts_early_init:
-	jal	harts_early_init
+	bl	harts_early_init
 
 #if !CONFIG_IS_ENABLED(XIP)
 	/*
 	 * Pick hart to initialize global data and run U-Boot. The other harts
 	 * wait for initialization to complete.
 	 */
-	la	t0, hart_lottery
-	li	t1, 1
-	amoswap.w s2, t1, 0(t0)
+	la	t0, hart_lottery	// arch/loongarch/cpu/cpu.c
+	ori	t1, zero, 1
+//	amoswap.w s2, t1, 0(t0)
+	amswap.w s2, t1, t0
 	bnez	s2, wait_for_gd_init
 #else
 	/*
@@ -155,14 +149,14 @@ call_harts_early_init:
 	 * problems if it encounters an exception too early (because printf/puts
 	 * accesses gd).
 	 */
-	mv	u0, s0
+	move	u0, s0
 #if CONFIG_IS_ENABLED(LOONGARCH_MMODE)
 	bnez	tp, secondary_hart_loop
 #endif
 #endif
 
-	mv      a0, s0
-	jal	board_init_f_init_reserve
+	move	a0, s0
+	bl	board_init_f_init_reserve
 
 	SREG	s1, u0,  GD_FIRMWARE_FDT_ADDR
 	/* save the boot hart id to global_data */
@@ -180,15 +174,15 @@ wait_for_gd_init:
 	 * This was already set by arch_setup_gd on the boot hart, but all other
 	 * harts' global data pointers gets set here.
 	 */
-	mv	u0, s0
+	move	u0, s0
 #ifdef CONFIG_AVAILABLE_HARTS
 	la	t0, available_harts_lock
-	li	t1, 1
+	ori	t1, zero, 1
 1:	amoswap.w.aq t1, t1, 0(t0)
 	bnez	t1, 1b
 
 	/* register available harts in the available_harts mask */
-	li	t1, 1
+	ori	t1, zero, 1
 	sll	t1, t1, tp
 	LREG	t2, u0, GD_AVAILABLE_HARTS
 	or	t2, t2, t1
@@ -205,16 +199,16 @@ wait_for_gd_init:
 #endif
 
 	/* Enable cache */
-	jal	icache_enable
-	jal	dcache_enable
+	bl	icache_enable
+	bl	dcache_enable
 
 #ifdef CONFIG_DEBUG_UART
-	jal	debug_uart_init
+	bl	debug_uart_init
 #endif
 
-	mv	a0, zero		/* a0 <-- boot_flags = 0 */
-	la	t5, board_init_f
-	jalr	t5			/* jump to board_init_f() */
+	move	a0, zero		/* a0 <-- boot_flags = 0 */
+	la	ra, board_init_f
+	jirl	ra, ra, 0		/* jump to board_init_f() */
 
 #ifdef CONFIG_SPL_BUILD
 spl_clear_bss:
@@ -224,48 +218,48 @@ spl_clear_bss:
 
 spl_clear_bss_loop:
 	SREG	zero, t0,  0
-	addi	t0, t0, REGBYTES
+	addi.d	t0, t0, REGBYTES
 	blt	t0, t1, spl_clear_bss_loop
 
 spl_stack_gd_setup:
-	jal	spl_relocate_stack_gd
+	bl	spl_relocate_stack_gd
 
 	/* skip setup if we did not relocate */
 	beqz	a0, spl_call_board_init_r
-	mv	s0, a0
+	move	s0, a0
 
 	/* setup stack on main hart */
 #if CONFIG_IS_ENABLED(SMP)
 	/* tp: hart id */
 	slli	t0, tp, CONFIG_STACK_SIZE_SHIFT
-	sub	sp, s0, t0
+	sub.d	sp, s0, t0
 #else
-	mv	sp, s0
+	move	sp, s0
 #endif
 
 #if CONFIG_IS_ENABLED(SMP)
 	/* set new stack and global data pointer on secondary harts */
 spl_secondary_hart_stack_gd_setup:
 	la	a0, secondary_hart_relocate
-	mv	a1, s0
-	mv	a2, s0
-	mv	a3, zero
+	move	a1, s0
+	move	a2, s0
+	move	a3, zero
 	jal	smp_call_function
 
 	/* hang if relocation of secondary harts has failed */
 	beqz	a0, 1f
-	mv	a1, a0
+	move	a1, a0
 	la	a0, secondary_harts_relocation_error
 	jal	printf
 	jal	hang
 #endif
 
 	/* set new global data pointer on main hart */
-1:	mv	u0, s0
+1:	move	u0, s0
 
 spl_call_board_init_r:
-	mv	a0, zero
-	mv	a1, zero
+	move	a0, zero
+	move	a1, zero
 	jal	board_init_r
 #endif
 
@@ -278,9 +272,9 @@ spl_call_board_init_r:
  */
 .globl relocate_code
 relocate_code:
-	mv	s2, a0			/* save addr_sp */
-	mv	s3, a1			/* save addr of gd */
-	mv	s4, a2			/* save addr of destination */
+	move	s2, a0			/* save addr_sp */
+	move	s3, a1			/* save addr of gd */
+	move	s4, a2			/* save addr of destination */
 
 /*
  *Set up the stack
@@ -289,25 +283,25 @@ stack_setup:
 #if CONFIG_IS_ENABLED(SMP)
 	/* tp: hart id */
 	slli	t0, tp, CONFIG_STACK_SIZE_SHIFT
-	sub	sp, s2, t0
+	sub.d	sp, s2, t0
 #else
-	mv	sp, s2
+	move	sp, s2
 #endif
 
 	la	t0, _start
-	sub	t6, s4, t0		/* t6 <- relocation offset */
+	sub.d	t6, s4, t0		/* t6 <- relocation offset */
 	beq	t0, s4, clear_bss	/* skip relocation */
 
-	mv	t1, s4			/* t1 <- scratch for copy_loop */
+	move	t1, s4			/* t1 <- scratch for copy_loop */
 	la	t3, __bss_start
-	sub	t3, t3, t0		/* t3 <- __bss_start_ofs */
-	add	t2, t0, t3		/* t2 <- source end address */
+	sub.d	t3, t3, t0		/* t3 <- __bss_start_ofs */
+	add.d	t2, t0, t3		/* t2 <- source end address */
 
 copy_loop:
 	LREG	t5, t0, 0
-	addi	t0, t0, REGBYTES
+	addi.d	t0, t0, REGBYTES
 	SREG	t5, t1,  0
-	addi	t1, t1, REGBYTES
+	addi.d	t1, t1, REGBYTES
 	blt	t0, t2, copy_loop
 
 /*
@@ -317,92 +311,92 @@ fix_rela_dyn:
 	la	t1, __rel_dyn_start
 	la	t2, __rel_dyn_end
 	beq	t1, t2, clear_bss
-	add	t1, t1, t6		/* t1 <- rela_dyn_start in RAM */
-	add	t2, t2, t6		/* t2 <- rela_dyn_end in RAM */
+	add.d	t1, t1, t6		/* t1 <- rela_dyn_start in RAM */
+	add.d	t2, t2, t6		/* t2 <- rela_dyn_end in RAM */
 
 /*
  * skip first reserved entry: address, type, addend
  */
-	j	10f
+	b	10f
 
 6:
 	LREG	t5, t1, -(REGBYTES*2)	/* t5 <-- relocation info:type */
-	li	t3, R_LARCH_RELATIVE	/* reloc type R_LARCH_RELATIVE */
+	ori	t3, zero, R_LARCH_RELATIVE	/* reloc type R_LARCH_RELATIVE */
 	bne	t5, t3, 8f		/* skip non-LOONGARCH_RELOC entries */
 	LREG	t3, t1, -(REGBYTES*3)
 	LREG	t5, t1, -(REGBYTES)	/* t5 <-- addend */
-	add	t5, t5, t6		/* t5 <-- location to fix up in RAM */
-	add	t3, t3, t6		/* t3 <-- location to fix up in RAM */
+	add.d	t5, t5, t6		/* t5 <-- location to fix up in RAM */
+	add.d	t3, t3, t6		/* t3 <-- location to fix up in RAM */
 	SREG	t5, t3,  0
-	j	10f
+	b	10f
 
 8:
 	la	t4, __dyn_sym_start
-	add	t4, t4, t6
+	add.d	t4, t4, t6
 
 9:
 	LREG	t5, t1, -(REGBYTES*2) 	/* t5 <-- relocation info:type */
-	srli	t0, t5, SYM_INDEX	/* t0 <--- sym table index */
+	srli.d	t0, t5, SYM_INDEX	/* t0 <--- sym table index */
 	andi	t5, t5, 0xFF		/* t5 <--- relocation type */
-	li	t3, RELOC_TYPE
+	ori	t3, zero, RELOC_TYPE
 	bne	t5, t3, 10f		/* skip non-addned entries */
 
 	LREG	t3, t1, -(REGBYTES*3)
-	li	t5, SYM_SIZE
-	mul	t0, t0, t5
-	add	s5, t4, t0
+	ori	t5, zero, SYM_SIZE
+	mul.d	t0, t0, t5
+	add.d	s5, t4, t0
 	LREG	t0, t1, -(REGBYTES)	/* t0 <-- addend */
 	LREG	t5, s5, REGBYTES
-	add	t5, t5, t0
-	add	t5, t5, t6		/* t5 <-- location to fix up in RAM */
-	add	t3, t3, t6		/* t3 <-- location to fix up in RAM */
+	add.d	t5, t5, t0
+	add.d	t5, t5, t6		/* t5 <-- location to fix up in RAM */
+	add.d	t3, t3, t6		/* t3 <-- location to fix up in RAM */
 	SREG	t5, t3,  0
 10:
-	addi	t1, t1, (REGBYTES*3)
+	addi.d	t1, t1, (REGBYTES*3)
 	ble	t1, t2, 6b
 
 /*
  * trap update
 */
 	la	t0, trap_entry
-	add	t0, t0, t6
-	csrw	MODE_PREFIX(tvec), t0
+	add.d	t0, t0, t6
+	csrwr	t0, 0xC				// EENTRY
 
 clear_bss:
 	la	t0, __bss_start		/* t0 <- rel __bss_start in FLASH */
-	add	t0, t0, t6		/* t0 <- rel __bss_start in RAM */
+	add.d	t0, t0, t6		/* t0 <- rel __bss_start in RAM */
 	la	t1, __bss_end		/* t1 <- rel __bss_end in FLASH */
-	add	t1, t1, t6		/* t1 <- rel __bss_end in RAM */
+	add.d	t1, t1, t6		/* t1 <- rel __bss_end in RAM */
 	beq	t0, t1, relocate_secondary_harts
 
 clbss_l:
 	SREG	zero, t0, 0		/* clear loop... */
-	addi	t0, t0, REGBYTES
+	addi.d	t0, t0, REGBYTES
 	blt	t0, t1, clbss_l
 
 relocate_secondary_harts:
 #if CONFIG_IS_ENABLED(SMP)
 	/* send relocation IPI */
 	la	t0, secondary_hart_relocate
-	add	a0, t0, t6
+	add.d	a0, t0, t6
 
 	/* store relocation offset */
-	mv	s5, t6
+	move	s5, t6
 
-	mv	a1, s2
-	mv	a2, s3
-	mv	a3, zero
+	move	a1, s2
+	move	a2, s3
+	move	a3, zero
 	jal	smp_call_function
 
 	/* hang if relocation of secondary harts has failed */
 	beqz	a0, 1f
-	mv	a1, a0
+	move	a1, a0
 	la	a0, secondary_harts_relocation_error
 	jal	printf
 	jal	hang
 
 	/* restore relocation offset */
-1:	mv	t6, s5
+1:	move	t6, s5
 #endif
 
 /*
@@ -410,15 +404,15 @@ relocate_secondary_harts:
  * initialization, now running from RAM.
  */
 call_board_init_r:
-	jal	invalidate_icache_all
-	jal	flush_dcache_all
+	bl	invalidate_icache_all
+	bl	flush_dcache_all
 	la	t0, board_init_r        /* offset of board_init_r() */
-	add	t4, t0, t6		/* real address of board_init_r() */
+	add.d	t4, t0, t6		/* real address of board_init_r() */
 /*
  * setup parameters for board_init_r
  */
-	mv	a0, s3			/* gd_t */
-	mv	a1, s4			/* dest_addr */
+	move	a0, s3			/* gd_t */
+	move	a1, s4			/* dest_addr */
 
 /*
  * jump to it ...
@@ -428,7 +422,7 @@ call_board_init_r:
 #if CONFIG_IS_ENABLED(SMP)
 hart_out_of_bounds_loop:
 	/* Harts in this loop are out of bounds, increase CONFIG_NR_CPUS. */
-	wfi
+	idle	0
 	j	hart_out_of_bounds_loop
 
 /* SMP relocation entry */
@@ -439,10 +433,10 @@ secondary_hart_relocate:
 
 	/* setup stack */
 	slli	t0, tp, CONFIG_STACK_SIZE_SHIFT
-	sub	sp, a1, t0
+	sub.d	sp, a1, t0
 
 	/* update global data pointer */
-	mv	u0, a2
+	move	u0, a2
 #endif
 
 /*
@@ -450,7 +444,7 @@ secondary_hart_relocate:
  * wfi function will wake us up if we get an IPI, even if we do not trap.
  */
 secondary_hart_loop:
-	wfi
+	idle	0
 
 #if CONFIG_IS_ENABLED(SMP)
 	csrr	t0, MODE_PREFIX(ip)
@@ -461,8 +455,8 @@ secondary_hart_loop:
 #endif
 	beqz	t0, secondary_hart_loop
 
-	mv	a0, tp
+	move	a0, tp
 	jal	handle_ipi
 #endif
 
-	j	secondary_hart_loop
+	b	secondary_hart_loop
