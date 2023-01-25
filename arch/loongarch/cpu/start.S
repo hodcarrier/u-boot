@@ -43,7 +43,9 @@ secondary_harts_relocation_error:
 .section .text
 .globl _start
 _start:
+#ifndef CONFIG_SPL_BUILD
 	la	a1, __dtb_dt_begin		// HACK: embedded fdt address
+#endif
 #if CONFIG_IS_ENABLED(LOONGARCH_MMODE)
 	csrrd	a0, 0x20			// CPUID
 #endif
@@ -207,8 +209,7 @@ wait_for_gd_init:
 #endif
 
 	move	a0, zero		/* a0 <-- boot_flags = 0 */
-	la	ra, board_init_f
-	jirl	ra, ra, 0		/* jump to board_init_f() */
+	bl	 board_init_f		/* jump to board_init_f() */
 
 #ifdef CONFIG_SPL_BUILD
 spl_clear_bss:
@@ -260,7 +261,7 @@ spl_secondary_hart_stack_gd_setup:
 spl_call_board_init_r:
 	move	a0, zero
 	move	a1, zero
-	jal	board_init_r
+	bl	board_init_r
 #endif
 
 /*
@@ -369,10 +370,10 @@ clear_bss:
 	add.d	t1, t1, t6		/* t1 <- rel __bss_end in RAM */
 	beq	t0, t1, relocate_secondary_harts
 
-clbss_l:
+1:
 	SREG	zero, t0, 0		/* clear loop... */
 	addi.d	t0, t0, REGBYTES
-	blt	t0, t1, clbss_l
+	blt	t0, t1, 1b
 
 relocate_secondary_harts:
 #if CONFIG_IS_ENABLED(SMP)
@@ -406,8 +407,9 @@ relocate_secondary_harts:
 call_board_init_r:
 	bl	invalidate_icache_all
 	bl	flush_dcache_all
-	la	t0, board_init_r        /* offset of board_init_r() */
-	add.d	t4, t0, t6		/* real address of board_init_r() */
+	la	ra, board_init_r        /* offset of board_init_r() */
+	add.d	ra, ra, t6		/* real address of board_init_r() */
+
 /*
  * setup parameters for board_init_r
  */
@@ -417,7 +419,7 @@ call_board_init_r:
 /*
  * jump to it ...
  */
-	jr	t4			/* jump to board_init_r() */
+	jr	ra			/* jump to board_init_r() */
 
 #if CONFIG_IS_ENABLED(SMP)
 hart_out_of_bounds_loop:
