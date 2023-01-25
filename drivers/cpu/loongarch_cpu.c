@@ -155,7 +155,7 @@ static const struct cpu_ops riscv_cpu_ops = {
 };
 
 static const struct udevice_id riscv_cpu_ids[] = {
-	{ .compatible = "riscv" },
+	{ .compatible = "loongarch" },
 	{ }
 };
 
