@@ -23,6 +23,7 @@
 
 static u64 notrace riscv_timer_get_count(struct udevice *dev)
 {
+#if	0
 	__maybe_unused u32 hi, lo;
 
 	if (IS_ENABLED(CONFIG_64BIT))
@@ -34,15 +35,20 @@ static u64 notrace riscv_timer_get_count(struct udevice *dev)
 	} while (hi != csr_read(CSR_TIMEH));
 
 	return ((u64)hi << 32) | lo;
+#else
+	static u64 counter;
+	counter++;
+	return counter;
+#endif
 }
 
-#if CONFIG_IS_ENABLED(RISCV_SMODE) && IS_ENABLED(CONFIG_TIMER_EARLY)
+#if CONFIG_IS_ENABLED(LOONGARCH_SMODE) && IS_ENABLED(CONFIG_TIMER_EARLY)
 /**
  * timer_early_get_rate() - Get the timer rate before driver model
  */
 unsigned long notrace timer_early_get_rate(void)
 {
-	return RISCV_SMODE_TIMER_FREQ;
+	return LOONGARCH_SMODE_TIMER_FREQ;
 }
 
 /**
@@ -59,6 +65,9 @@ static int riscv_timer_probe(struct udevice *dev)
 {
 	struct timer_dev_priv *uc_priv = dev_get_uclass_priv(dev);
 
+//	printf("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT\n");
+//	while(1);
+
 	/* clock frequency was passed from the cpu driver as driver data */
 	uc_priv->clock_rate = dev->driver_data;
 
@@ -70,7 +79,7 @@ static const struct timer_ops riscv_timer_ops = {
 };
 
 U_BOOT_DRIVER(riscv_timer) = {
-	.name = "riscv_timer",
+	.name = "loongarch_timer",
 	.id = UCLASS_TIMER,
 	.probe = riscv_timer_probe,
 	.ops = &riscv_timer_ops,
