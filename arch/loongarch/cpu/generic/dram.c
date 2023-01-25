@@ -31,8 +31,9 @@ phys_size_t board_get_usable_ram_top(phys_size_t total_size)
 	 * devices work fine because DMA mapping APIs will
 	 * provide 32bit DMA addresses only.
 	 */
+#if 0
 	if (gd->ram_top >= SZ_4G)
 		return SZ_4G - 1;
-
+#endif
 	return gd->ram_top;
 }
