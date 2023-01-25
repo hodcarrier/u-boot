@@ -97,13 +97,15 @@ static int riscv_cpu_bind(struct udevice *dev)
 	int ret;
 
 	/* save the hart id */
-	plat->cpu_id = dev_read_addr(dev);
+	// plat->cpu_id = dev_read_addr(dev);
+	plat->cpu_id = gd->arch.boot_hart;
 	/* first examine the property in current cpu node */
-	ret = dev_read_u32(dev, "timebase-frequency", &plat->timebase_freq);
+	// ret = dev_read_u32(dev, "timebase-frequency", &plat->timebase_freq);
 	/* if not found, then look at the parent /cpus node */
-	if (ret)
-		dev_read_u32(dev->parent, "timebase-frequency",
-			     &plat->timebase_freq);
+	//if (ret)
+	//	dev_read_u32(dev->parent, "timebase-frequency",
+	//		     &plat->timebase_freq);
+	plat->timebase_freq = 1000000;
 
 	/*
 	 * Bind riscv-timer driver on boot hart.
@@ -116,15 +118,16 @@ static int riscv_cpu_bind(struct udevice *dev)
 	 * driver is not included.
 	 */
 	if (plat->cpu_id == gd->arch.boot_hart && plat->timebase_freq) {
-		drv = lists_driver_lookup_name("riscv_timer");
+		drv = lists_driver_lookup_name("loongarch_timer");
 		if (!drv) {
 			debug("Cannot find the timer driver, not included?\n");
 			return 0;
 		}
 
-		device_bind_with_driver_data(dev, drv, "riscv_timer",
+		device_bind_with_driver_data(dev, drv, "loongarch_timer",
 					     plat->timebase_freq, ofnode_null(),
 					     NULL);
+//		while(1);
 	}
 
 	return 0;
