@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: GPL-2.0
+// Copyright (C) 2022 Du Huanpeng <dhu@hodcarrier.org>
+
+/dts-v1/;
+#include "loongson-ls2k0500.dtsi"
+/ {
+       	model = "loongson-2k0500-dev";
+        compatible = "simple-bus";
+        #address-cells = <2>;
+	#size-cells = <1>;
+
+        memory@0 {
+		name = "memory";
+		device_type = "memory";
+		reg = <0x90000000 0x00000000 0x10000000>;
+		u-boot,dm-pre-reloc;
+        };
+
+};
+
+&uart2 {
+	status = "okay";
+};

@@ -1,0 +1,44 @@
+// SPDX-License-Identifier: GPL-2.0
+// Copyright (C) 2023 Du Huanpeng <dhu@hodcarrier.org>
+
+/ {
+       	compatible = "loongson,ls2k0500";
+        #address-cells = <2>;
+	#size-cells = <1>;
+
+        cpus {
+                #address-cells = <1>;
+                #size-cells = <0>;
+
+                cpu@0 {
+                    	device_type = "cpu";
+                        compatible = "loongarch,la64";
+                        reg = <0>;
+                };
+        };
+
+        clocks {
+                compatible = "simple-bus";
+		u-boot,dm-pre-reloc;
+
+                dummy: oscillator@0 {
+			compatible = "fixed-clock";
+                        #clock-cells = <0>;
+			clock-frequency = <100000000>;
+			u-boot,dm-pre-reloc;
+                };
+        };
+
+        soc {
+		compatible = "simple-bus";
+		u-boot,dm-pre-reloc;
+
+                uart2: serial@1ff40800 {
+                        compatible = "ns16550";
+                        reg = <0x80000000 0x1ff40800 0x400>;
+                        clocks = <&dummy>;
+                        no-loopback-test;
+                        u-boot,dm-pre-reloc;
+                };
+        };
+};
