@@ -19,7 +19,7 @@ config SYS_ICACHE_SIZE
 config SYS_ICACHE_LINE_SIZE
 	default 32
 
-config SYS_TEXT_BASE
+config TEXT_BASE
 	default 0xbfc00000 if !SPL
 	default 0x80200000 if SPL
 
