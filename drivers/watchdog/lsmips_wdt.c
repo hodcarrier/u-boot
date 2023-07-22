@@ -6,7 +6,7 @@
  * Author: Ryder Lee <ryder.lee@mediatek.com>
  *
  * based on: drivers/watchdog/mtk_wdt.c
- * Copyright (C) 2020-2022 Du Huanpeng <dhu@hodcarrier.org>
+ * Copyright (C) 2020-2023 Du Huanpeng <dhu@hodcarrier.org>
  */
 
 #include <common.h>
@@ -84,20 +84,23 @@ static int lsmips_wdt_probe(struct udevice *dev)
 {
 	struct lsmips_wdt_priv *priv = dev_get_priv(dev);
 	struct clk cl;
+	ulong clock;
 
 	priv->base = dev_remap_addr(dev);
 	if (!priv->base)
 		return -ENOENT;
 
 	if (clk_get_by_index(dev, 0, &cl) == 0)
-		priv->clock = clk_get_rate(&cl);
+		clock = clk_get_rate(&cl);
 
-	if (priv->clock < 45000000 || priv->clock > 133000000) {
-		return -EAGAIN;
+	debug("WDT: clock = %ld\n", clock);
+
+	if (IS_ERR_VALUE(clock)) {
+		dev_err(dev, "failed to get rate\n");
+		return clock;
 	}
 
-	debug("WDT: clock = %ld\n", priv->clock);
-
+	priv->clock = clock;
 	writel(0, priv->base + WDT_EN);
 	return 0;
 }
