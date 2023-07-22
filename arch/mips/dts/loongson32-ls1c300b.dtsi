@@ -1,0 +1,150 @@
+// SPDX-License-Identifier: GPL-2.0
+#include <dt-bindings/clock/ls1c300-clk.h>
+#include <dt-bindings/reset/ls1c300-reset.h>
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+	compatible = "loongson,ls1c300-soc";
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		cpu@0 {
+			device_type = "cpu";
+			reg = <0>;
+			compatible = "loongson,gs232", "mips,mips4Kc";
+			clocks = <&acc CLK_CPU_THROT>;
+		};
+	};
+
+	clocks {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		u-boot,dm-pre-reloc;
+
+		xtal: oscillator {
+			compatible = "fixed-clock";
+			clock-frequency = <24000000>;
+			#clock-cells = <0>;
+		};
+	};
+
+	soc {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "simple-bus";
+		ranges;
+
+		acc: clock-controller@1fe78030 {
+			compatible = "loongson,ls1c300-clk";
+			clocks = <&xtal>;
+			#clock-cells = <1>;
+			reg = <0x1fe78030 0x8>, <0x1fe7c010 0x4>;
+			u-boot,dm-pre-reloc;
+		};
+
+		uart0: serial@1fe40000 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe40000 0x100>;
+			status = "disabled";
+		};
+
+		uart1: serial@1fe44000 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe44000 0x100>;
+			status = "disabled";
+		};
+
+		uart2: serial@1fe48000 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe48000 0x100>;
+			resets = <&shut_ctrl UART2_SHUT>;
+			reset-names = "uart2";
+			status = "disabled";
+		};
+
+		uart3: serial@1fe4c000 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe4c000 0x100>;
+			status = "disabled";
+		};
+
+		uart4:  serial@1fe4c400 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe4c400 0x100>;
+			status = "disabled";
+		};
+
+		uart5:  serial@1fe4c500 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe4c500 0x100>;
+			status = "disabled";
+		};
+
+		uart6:  serial@1fe4c600 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe4c600 0x100>;
+			status = "disabled";
+		};
+
+		uart7:  serial@1fe4c700 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe4c700 0x100>;
+			status = "disabled";
+		};
+
+		uart8:  serial@1fe4c800 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe4c800 0x100>;
+			status = "disabled";
+		};
+
+		uart9:  serial@1fe4c900 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe4c900 0x100>;
+			status = "disabled";
+		};
+
+		uart10: serial@1fe4ca00 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe4ca00 0x100>;
+			status = "disabled";
+		};
+
+		uart11: serial@1fe4cb00 {
+			compatible = "loongson,ls1c300-uart", "ns16550a";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe4cb00 0x100>;
+			status = "disabled";
+		};
+
+		wdt: watchdog@1fe5c060 {
+			compatible = "loongson,ls1c300-wdt";
+			clocks = <&acc CLK_APB>;
+			reg = <0x1fe5c060 0x10>;
+		};
+
+		reset-controller {
+			compatible = "wdt-reboot";
+			wdt = <&wdt>;
+		};
+
+		shut_ctrl: reset-controller@1fd00420 {
+			compatible = "loongson,shut_ctrl";
+			reg = <0x1fd00420 0x4>;
+			#reset-cells = <1>;
+		};
+	};
+};
