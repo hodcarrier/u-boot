@@ -74,17 +74,19 @@ LEAF(ls1c300_sdram_init)
 	li	t1, CFG_SDCONFIGLO
 	li	t2, CFG_SDCONFIGHI
 
+/* store twice as the hardware manual required. */
 	sw	t1, SD_CONFIGLO (t0)
 	sw	t2, SD_CONFIGHI (t0)
-	nop
+	sync
 
 	sw	t1, SD_CONFIGLO (t0)
 	sw	t2, SD_CONFIGHI (t0)
-	nop
+	sync
 
 	ori	t2, 1<<(CONFIG_VALID-32)
 	sw	t1, SD_CONFIGLO (t0)
 	sw	t2, SD_CONFIGHI (t0)
+	sync
 #endif
 	li	v0, SZ_64M
 	jr	ra
