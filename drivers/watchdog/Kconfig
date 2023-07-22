@@ -171,6 +171,14 @@ config WDT_GPIO
 	  doc/device-tree-bindings/watchdog/gpio-wdt.txt for
 	  information on how to describe the watchdog in device tree.
 
+config WDT_LSMIPS
+	bool "Loongson MIPS watchdog timer support"
+	depends on WDT
+	help
+	  Select this to enable watchdog timer for Loongson SoCs.
+	  The watchdog timer is stopped when initialized.
+	  It performs full SoC reset.
+
 config WDT_MAX6370
 	bool "MAX6370 watchdog timer support"
 	depends on WDT
