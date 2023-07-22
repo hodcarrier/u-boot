@@ -88,6 +88,16 @@ config ARCH_MTMIPS
 	select SUPPORTS_LITTLE_ENDIAN
 	select SUPPORT_SPL
 
+config ARCH_LSMIPS
+	bool "Support Loongson MIPS platforms"
+	select DM
+	select DM_SERIAL
+	select OF_CONTROL
+	select SUPPORTS_CPU_MIPS32_R1
+	select SUPPORTS_CPU_MIPS32_R2
+	select SUPPORTS_LITTLE_ENDIAN
+	select SUPPORT_SPL
+
 config ARCH_JZ47XX
 	bool "Support Ingenic JZ47xx"
 	select SUPPORT_SPL
@@ -173,6 +183,7 @@ source "arch/mips/mach-bmips/Kconfig"
 source "arch/mips/mach-jz47xx/Kconfig"
 source "arch/mips/mach-pic32/Kconfig"
 source "arch/mips/mach-mtmips/Kconfig"
+source "arch/mips/mach-lsmips/Kconfig"
 source "arch/mips/mach-octeon/Kconfig"
 
 if MIPS
