@@ -19,6 +19,7 @@ obj-$(CONFIG_RESET_AST2600) += reset-ast2600.o
 obj-$(CONFIG_RESET_ROCKCHIP) += reset-rockchip.o rst-rk3588.o
 obj-$(CONFIG_RESET_MESON) += reset-meson.o
 obj-$(CONFIG_RESET_SOCFPGA) += reset-socfpga.o
+obj-$(CONFIG_RESET_LSMIPS) += reset-lsmips.o
 obj-$(CONFIG_RESET_MEDIATEK) += reset-mediatek.o
 obj-$(CONFIG_RESET_MTMIPS) += reset-mtmips.o
 obj-$(CONFIG_RESET_SUNXI) += reset-sunxi.o
