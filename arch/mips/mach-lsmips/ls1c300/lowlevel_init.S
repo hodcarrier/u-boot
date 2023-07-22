@@ -4,7 +4,7 @@
  *
  * Author:  Gao Weijie <weijie.gao@mediatek.com>
  *
- * Copyright (C) 2020-2022 Du Huanpeng <dhu@hodcarrier.org>
+ * Copyright (C) 2020-2023 Du Huanpeng <dhu@hodcarrier.org>
  */
 
 #include <config.h>
@@ -90,14 +90,13 @@ LEAF(ls1c300_pll_init)
 	sw	t3, CPU_THROT (t0)
 	sw	t2, CLK_DIV_PARAM (t0)
 	sw	t1, START_FREQ (t0)
-	  nop
 
 	ori	t2, 1<<CPU_SEL
 	sw	t2, CLK_DIV_PARAM (t0)
 #endif
 	li	v0, 264000000
 	jr	ra
-	nop
+	 nop
 END(ls1c300_pll_init)
 
 LEAF(ls1c300_spi_init)
