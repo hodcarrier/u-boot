@@ -60,9 +60,8 @@ static int lsmips_wdt_start(struct udevice *dev, u64 timeout_ms, ulong flags)
 {
 	struct lsmips_wdt_priv *priv = dev_get_priv(dev);
 	unsigned int timeout;
-	const unsigned int MSEC_PER_SEC = 1000;
 
-	timeout = U32_MAX / (priv->clock / MSEC_PER_SEC);
+	timeout = U32_MAX / (priv->clock / 1000UL);
 
 	if (timeout < timeout_ms)
 		timeout = U32_MAX;
