@@ -66,7 +66,7 @@ static int lsmips_wdt_start(struct udevice *dev, u64 timeout_ms, ulong flags)
 	if (timeout < timeout_ms)
 		timeout = U32_MAX;
 	else
-		timeout = timeout_ms * (priv->clock / MSEC_PER_SEC);
+		timeout = timeout_ms * (priv->clock / 1000UL);
 
 	debug("WDT: reload  = %08x\n", timeout);
 
