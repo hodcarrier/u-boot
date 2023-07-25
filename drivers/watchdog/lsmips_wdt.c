@@ -11,6 +11,7 @@
 
 #include <common.h>
 #include <dm.h>
+#include <dm/device_compat.h>
 #include <hang.h>
 #include <wdt.h>
 #include <asm/io.h>
