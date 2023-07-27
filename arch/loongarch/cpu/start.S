@@ -123,8 +123,8 @@ call_board_init_f_0:
 	/* setup stack */
 #if CONFIG_IS_ENABLED(SMP)
 	/* tp: hart id */
-	slli	t0, tp, CONFIG_STACK_SIZE_SHIFT
-	sub	sp, a0, t0
+	slli.d	t0, tp, CONFIG_STACK_SIZE_SHIFT
+	sub.d	sp, a0, t0
 #else
 	move	sp, a0
 #endif
@@ -232,7 +232,7 @@ spl_stack_gd_setup:
 	/* setup stack on main hart */
 #if CONFIG_IS_ENABLED(SMP)
 	/* tp: hart id */
-	slli	t0, tp, CONFIG_STACK_SIZE_SHIFT
+	slli.d	t0, tp, CONFIG_STACK_SIZE_SHIFT
 	sub.d	sp, s0, t0
 #else
 	move	sp, s0
@@ -245,14 +245,14 @@ spl_secondary_hart_stack_gd_setup:
 	move	a1, s0
 	move	a2, s0
 	move	a3, zero
-	jal	smp_call_function
+	bl	smp_call_function
 
 	/* hang if relocation of secondary harts has failed */
 	beqz	a0, 1f
 	move	a1, a0
 	la	a0, secondary_harts_relocation_error
-	jal	printf
-	jal	hang
+	bl	printf
+	bl	hang
 #endif
 
 	/* set new global data pointer on main hart */
@@ -283,7 +283,7 @@ relocate_code:
 stack_setup:
 #if CONFIG_IS_ENABLED(SMP)
 	/* tp: hart id */
-	slli	t0, tp, CONFIG_STACK_SIZE_SHIFT
+	slli.d	t0, tp, CONFIG_STACK_SIZE_SHIFT
 	sub.d	sp, s2, t0
 #else
 	move	sp, s2
@@ -387,14 +387,14 @@ relocate_secondary_harts:
 	move	a1, s2
 	move	a2, s3
 	move	a3, zero
-	jal	smp_call_function
+	bl	smp_call_function
 
 	/* hang if relocation of secondary harts has failed */
 	beqz	a0, 1f
 	move	a1, a0
 	la	a0, secondary_harts_relocation_error
-	jal	printf
-	jal	hang
+	bl	printf
+	bl	hang
 
 	/* restore relocation offset */
 1:	move	t6, s5
@@ -425,7 +425,7 @@ call_board_init_r:
 hart_out_of_bounds_loop:
 	/* Harts in this loop are out of bounds, increase CONFIG_NR_CPUS. */
 	idle	0
-	j	hart_out_of_bounds_loop
+	b	hart_out_of_bounds_loop
 
 /* SMP relocation entry */
 secondary_hart_relocate:
@@ -434,7 +434,7 @@ secondary_hart_relocate:
 	/* tp: hart id */
 
 	/* setup stack */
-	slli	t0, tp, CONFIG_STACK_SIZE_SHIFT
+	slli.d	t0, tp, CONFIG_STACK_SIZE_SHIFT
 	sub.d	sp, a1, t0
 
 	/* update global data pointer */
@@ -449,7 +449,8 @@ secondary_hart_loop:
 	idle	0
 
 #if CONFIG_IS_ENABLED(SMP)
-	csrr	t0, MODE_PREFIX(ip)
+//	csrrd	t0, MODE_PREFIX(ip)
+	csrrd	t0, 0
 #if CONFIG_IS_ENABLED(LOONGARCH_MMODE)
 	andi	t0, t0, MIE_MSIE
 #else
@@ -458,7 +459,7 @@ secondary_hart_loop:
 	beqz	t0, secondary_hart_loop
 
 	move	a0, tp
-	jal	handle_ipi
+	bl	handle_ipi
 #endif
 
 	b	secondary_hart_loop
