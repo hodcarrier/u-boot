@@ -43,7 +43,7 @@ static int enable_ipi(int hart)
 	return 0;
 }
 
-int riscv_init_ipi(void)
+int loongarch_init_ipi(void)
 {
 	int ret;
 	long *base = syscon_get_first_range(LOONGARCH_SYSCON_PLICSW);
@@ -84,7 +84,7 @@ int riscv_init_ipi(void)
 	return 0;
 }
 
-int riscv_send_ipi(int hart)
+int loongarch_send_ipi(int hart)
 {
 	unsigned int ipi = (SEND_IPI_TO_HART(hart) << (8 * gd->arch.boot_hart));
 
@@ -94,7 +94,7 @@ int riscv_send_ipi(int hart)
 	return 0;
 }
 
-int riscv_clear_ipi(int hart)
+int loongarch_clear_ipi(int hart)
 {
 	u32 source_id;
 
@@ -104,7 +104,7 @@ int riscv_clear_ipi(int hart)
 	return 0;
 }
 
-int riscv_get_ipi(int hart, int *pending)
+int loongarch_get_ipi(int hart, int *pending)
 {
 	unsigned int ipi = (SEND_IPI_TO_HART(hart) << (8 * gd->arch.boot_hart));
 

@@ -65,7 +65,7 @@ static int send_ipi_many(struct ipi_data *ipi, int wait)
 		 */
 		__smp_store_release(&gd->arch.ipi[reg].valid, 1);
 
-		ret = riscv_send_ipi(reg);
+		ret = loongarch_send_ipi(reg);
 		if (ret) {
 			pr_err("Cannot send IPI to hart %d\n", reg);
 			return ret;
@@ -74,7 +74,7 @@ static int send_ipi_many(struct ipi_data *ipi, int wait)
 		if (wait) {
 			pending = 1;
 			while (pending) {
-				ret = riscv_get_ipi(reg, &pending);
+				ret = loongarch_get_ipi(reg, &pending);
 				if (ret)
 					return ret;
 			}
@@ -107,7 +107,7 @@ void handle_ipi(ulong hart)
 	 * Clear the IPI to acknowledge the request before jumping to the
 	 * requested function.
 	 */
-	ret = riscv_clear_ipi(hart);
+	ret = loongarch_clear_ipi(hart);
 	if (ret) {
 		pr_err("Cannot clear IPI of hart %ld (error %d)\n", hart, ret);
 		return;

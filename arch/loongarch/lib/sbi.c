@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2020 Western Digital Corporation or its affiliates.
  *
- * Taken from Linux arch/riscv/kernel/sbi.c
+ * Taken from Linux arch/loongarch/kernel/sbi.c
  */
 
 #include <common.h>

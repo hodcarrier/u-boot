@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0+
-/* reloc_riscv.c - position independent ELF shared object relocator
+/* reloc_loongarch.c - position independent ELF shared object relocator
    Copyright (C) 2018 Alexander Graf <agraf@suse.de>
    Copyright (C) 2014 Linaro Ltd. <ard.biesheuvel@linaro.org>
    Copyright (C) 1999 Hewlett-Packard Co.

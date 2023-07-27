@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
- * crt0-efi-riscv.S - PE/COFF header for RISC-V EFI applications
+ * crt0-efi-loongarch.S - PE/COFF header for RISC-V EFI applications
  *
  * Copright (C) 2014 Linaro Ltd. <ard.biesheuvel@linaro.org>
  * Copright (C) 2018 Alexander Graf <agraf@suse.de>

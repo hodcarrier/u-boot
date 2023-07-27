@@ -8,12 +8,12 @@
 #include <asm/encoding.h>
 #include <asm/sbi.h>
 
-int riscv_init_ipi(void)
+int loongarch_init_ipi(void)
 {
 	return 0;
 }
 
-int riscv_send_ipi(int hart)
+int loongarch_send_ipi(int hart)
 {
 	ulong mask;
 
@@ -23,14 +23,14 @@ int riscv_send_ipi(int hart)
 	return 0;
 }
 
-int riscv_clear_ipi(int hart)
+int loongarch_clear_ipi(int hart)
 {
 	csr_clear(CSR_SIP, SIP_SSIP);
 
 	return 0;
 }
 
-int riscv_get_ipi(int hart, int *pending)
+int loongarch_get_ipi(int hart, int *pending)
 {
 	/*
 	 * The SBI does not support reading the IPI status. We always return 0

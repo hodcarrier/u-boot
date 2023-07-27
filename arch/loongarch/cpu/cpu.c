@@ -68,7 +68,7 @@ static inline bool supports_extension(char ext)
 #endif /* CONFIG_CPU */
 }
 
-static int riscv_cpu_probe(void)
+static int loongarch_cpu_probe(void)
 {
 #ifdef CONFIG_CPU
 	int ret;
@@ -93,11 +93,11 @@ static void dummy_pending_ipi_clear(ulong hart, ulong arg0, ulong arg1)
 }
 #endif
 
-int riscv_cpu_setup(void *ctx, struct event *event)
+int loongarch_cpu_setup(void *ctx, struct event *event)
 {
 	int ret;
 
-	ret = riscv_cpu_probe();
+	ret = loongarch_cpu_probe();
 	if (ret)
 		return ret;
 
@@ -129,7 +129,7 @@ int riscv_cpu_setup(void *ctx, struct event *event)
 	}
 
 #if CONFIG_IS_ENABLED(SMP)
-	ret = riscv_init_ipi();
+	ret = loongarch_init_ipi();
 	if (ret)
 		return ret;
 
@@ -145,13 +145,13 @@ int riscv_cpu_setup(void *ctx, struct event *event)
 
 	return 0;
 }
-EVENT_SPY(EVT_DM_POST_INIT, riscv_cpu_setup);
+EVENT_SPY(EVT_DM_POST_INIT, loongarch_cpu_setup);
 
 int arch_early_init_r(void)
 {
 	int ret;
 
-	ret = riscv_cpu_probe();
+	ret = loongarch_cpu_probe();
 	if (ret)
 		return ret;
 

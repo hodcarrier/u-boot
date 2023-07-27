@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
- * Based on arch/riscv/cpu/u-boot.lds, which is
+ * Based on arch/loongarch/cpu/u-boot.lds, which is
  * Copyright (C) 2017 Andes Technology Corporation
  * Rick Chen, Andes Technology Corporation <rick@andestech.com>
  *

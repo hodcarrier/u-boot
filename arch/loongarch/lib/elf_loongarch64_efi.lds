@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
- * U-Boot riscv64 EFI linker script
+ * U-Boot loongarch64 EFI linker script
  *
  * SPDX-License-Identifier:	BSD-2-Clause
  *

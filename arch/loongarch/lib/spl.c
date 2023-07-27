@@ -28,7 +28,7 @@ __weak void board_init_f(ulong dummy)
 	if (ret)
 		panic("spl_early_init() failed: %d\n", ret);
 
-	riscv_cpu_setup(NULL, NULL);
+	loongarch_cpu_setup(NULL, NULL);
 
 	preloader_console_init();
 
@@ -39,7 +39,7 @@ __weak void board_init_f(ulong dummy)
 
 void __noreturn jump_to_image_no_args(struct spl_image_info *spl_image)
 {
-	typedef void __noreturn (*image_entry_riscv_t)(ulong hart, void *dtb);
+	typedef void __noreturn (*image_entry_loongarch_t)(ulong hart, void *dtb);
 	void *fdt_blob;
 	__maybe_unused int ret;
 
@@ -49,8 +49,8 @@ void __noreturn jump_to_image_no_args(struct spl_image_info *spl_image)
 	fdt_blob = (void *)gd->fdt_blob;
 #endif
 
-	image_entry_riscv_t image_entry =
-		(image_entry_riscv_t)spl_image->entry_point;
+	image_entry_loongarch_t image_entry =
+		(image_entry_loongarch_t)spl_image->entry_point;
 	invalidate_icache_all();
 
 	debug("image entry point: 0x%lX\n", spl_image->entry_point);

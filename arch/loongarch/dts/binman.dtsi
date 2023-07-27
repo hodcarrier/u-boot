@@ -25,7 +25,7 @@
 					description = "U-Boot";
 					type = "standalone";
 					os = "U-Boot";
-					arch = "riscv";
+					arch = "loongarch";
 					compression = "none";
 					load = <CONFIG_TEXT_BASE>;
 
@@ -38,7 +38,7 @@
 					description = "OpenSBI fw_dynamic Firmware";
 					type = "firmware";
 					os = "opensbi";
-					arch = "riscv";
+					arch = "loongarch";
 					compression = "none";
 					load = <CONFIG_SPL_OPENSBI_LOAD_ADDR>;
 					entry = <CONFIG_SPL_OPENSBI_LOAD_ADDR>;

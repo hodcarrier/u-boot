@@ -3,7 +3,7 @@
  * Copyright (C) 2015 Regents of the University of California
  * Copyright (c) 2020 Western Digital Corporation or its affiliates.
  *
- * Taken from Linux arch/riscv/include/asm/sbi.h
+ * Taken from Linux arch/loongarch/include/asm/sbi.h
  */
 
 #ifndef _ASM_LOONGARCH_SBI_H

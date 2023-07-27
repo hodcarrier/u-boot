@@ -15,7 +15,7 @@
 DECLARE_GLOBAL_DATA_PTR;
 
 /**
- * riscv_fdt_copy_resv_mem_node() - Copy reserve memory node entry
+ * loongarch_fdt_copy_resv_mem_node() - Copy reserve memory node entry
  * @src: Pointer to the source device tree from which reserved memory node
  *	 needs to be copied.
  * @dst: Pointer to the destination device tree to which reserved memory node
@@ -24,7 +24,7 @@ DECLARE_GLOBAL_DATA_PTR;
  * Return: 0 on success or if source doesn't have reserved memory node.
  *	   Error if copy process failed.
  */
-int riscv_fdt_copy_resv_mem_node(const void *src, void *dst)
+int loongarch_fdt_copy_resv_mem_node(const void *src, void *dst)
 {
 	u32 phandle;
 	struct fdt_memory pmp_mem;
@@ -90,7 +90,7 @@ int riscv_fdt_copy_resv_mem_node(const void *src, void *dst)
 }
 
 /**
- * riscv_board_reserved_mem_fixup() - Fix up reserved memory node for a board
+ * loongarch_board_reserved_mem_fixup() - Fix up reserved memory node for a board
  * @fdt: Pointer to the device tree in which reserved memory node needs to be
  *	 added.
  *
@@ -100,7 +100,7 @@ int riscv_fdt_copy_resv_mem_node(const void *src, void *dst)
  *
  * Return: 0 on success or error otherwise.
  */
-int riscv_board_reserved_mem_fixup(void *fdt)
+int loongarch_board_reserved_mem_fixup(void *fdt)
 {
 	int err;
 	void *src_fdt_addr;
@@ -111,7 +111,7 @@ int riscv_board_reserved_mem_fixup(void *fdt)
 	if (src_fdt_addr == fdt)
 		return 0;
 
-	err = riscv_fdt_copy_resv_mem_node(src_fdt_addr, fdt);
+	err = loongarch_fdt_copy_resv_mem_node(src_fdt_addr, fdt);
 	if (err < 0)
 		return err;
 
@@ -123,7 +123,7 @@ int board_fix_fdt(void *fdt)
 {
 	int err;
 
-	err = riscv_board_reserved_mem_fixup(fdt);
+	err = loongarch_board_reserved_mem_fixup(fdt);
 	if (err < 0) {
 		log_err("failed to fixup DT for reserved memory: %d\n", err);
 		return err;
@@ -162,7 +162,7 @@ int arch_fixup_fdt(void *blob)
 #endif
 
 	/* Copy the reserved-memory node to the DT used by OS */
-	err = riscv_fdt_copy_resv_mem_node(gd->fdt_blob, blob);
+	err = loongarch_fdt_copy_resv_mem_node(gd->fdt_blob, blob);
 	if (err < 0)
 		return err;
 

@@ -20,7 +20,7 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-int riscv_init_ipi(void)
+int loongarch_init_ipi(void)
 {
 	int ret;
 	struct udevice *dev;
@@ -37,21 +37,21 @@ int riscv_init_ipi(void)
 	return 0;
 }
 
-int riscv_send_ipi(int hart)
+int loongarch_send_ipi(int hart)
 {
 	writel(1, (void __iomem *)MSIP_REG(gd->arch.clint, hart));
 
 	return 0;
 }
 
-int riscv_clear_ipi(int hart)
+int loongarch_clear_ipi(int hart)
 {
 	writel(0, (void __iomem *)MSIP_REG(gd->arch.clint, hart));
 
 	return 0;
 }
 
-int riscv_get_ipi(int hart, int *pending)
+int loongarch_get_ipi(int hart, int *pending)
 {
 	*pending = readl((void __iomem *)MSIP_REG(gd->arch.clint, hart));
 

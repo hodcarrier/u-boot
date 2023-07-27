@@ -17,6 +17,6 @@ struct event;
  */
 
 /* Hook to set up the CPU (called from SPL too) */
-int riscv_cpu_setup(void *ctx, struct event *event);
+int loongarch_cpu_setup(void *ctx, struct event *event);
 
 #endif	/* __ASM_LOONGARCH_SYSTEM_H */

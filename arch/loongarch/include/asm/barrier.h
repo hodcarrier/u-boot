@@ -4,7 +4,7 @@
  * Copyright (C) 2013 Regents of the University of California
  * Copyright (C) 2017 SiFive
  *
- * Taken from Linux arch/riscv/include/asm/barrier.h, which is based on
+ * Taken from Linux arch/loongarch/include/asm/barrier.h, which is based on
  * arch/arm/include/asm/barrier.h
  */
 

@@ -2,7 +2,7 @@
 /*
  * Copyright (C) 2015 Regents of the University of California
  *
- * Taken from Linux arch/riscv/include/asm/csr.h
+ * Taken from Linux arch/loongarch/include/asm/csr.h
  */
 
 #ifndef _ASM_LOONGARCH_CSR_H
