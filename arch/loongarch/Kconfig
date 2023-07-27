@@ -41,9 +41,7 @@ config SPL_SYS_DCACHE_OFF
 source "board/emulation/qemu-loongarch/Kconfig"
 
 # platform-specific options below
-source "arch/loongarch/cpu/ax25/Kconfig"
-source "arch/loongarch/cpu/fu540/Kconfig"
-source "arch/loongarch/cpu/fu740/Kconfig"
+source "arch/loongarch/cpu/la264/Kconfig"
 source "arch/loongarch/cpu/generic/Kconfig"
 
 # architecture-specific options below
