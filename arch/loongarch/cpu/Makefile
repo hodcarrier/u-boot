@@ -4,4 +4,4 @@
 
 extra-y = start.o
 
-obj-y += cpu.o mtrap.o
+obj-y += cpu.o genex.o traps.o
