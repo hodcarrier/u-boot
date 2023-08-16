@@ -1,76 +1,71 @@
-// SPDX-License-Identifier: GPL-2.0+
+// SPDX-License-Identifier: GPL-2.0
 /*
- * Copyright (C) 2017 Andes Technology Corporation
- * Rick Chen, Andes Technology Corporation <rick@andestech.com>
+ * Copyright (C) 2019 Intel Corporation <www.intel.com>
  */
 
-#include <common.h>
-#include <cpu_func.h>
+#ifndef __CACHE_H
+#define __CACHE_H
 
-void invalidate_icache_all(void)
-{
-        asm volatile ("\tibar 0\n"::);
-}
+struct udevice;
 
-__weak void flush_dcache_all(void)
-{
-}
+/*
+ * Structure for the cache controller
+ */
+struct cache_info {
+	phys_addr_t base; /* Base physical address of cache device. */
+};
 
-__weak void flush_dcache_range(unsigned long start, unsigned long end)
-{
-}
-
-void invalidate_icache_range(unsigned long start, unsigned long end)
-{
-	/*
-	 * RISC-V does not have an instruction for invalidating parts of the
-	 * instruction cache. Invalidate all of it instead.
+struct cache_ops {
+	/**
+	 * get_info() - Get basic cache info
+	 *
+	 * @dev:	Device to check (UCLASS_CACHE)
+	 * @info:	Place to put info
+	 * @return 0 if OK, -ve on error
 	 */
-	invalidate_icache_all();
-}
+	int (*get_info)(struct udevice *dev, struct cache_info *info);
 
-__weak void invalidate_dcache_range(unsigned long start, unsigned long end)
-{
-}
+	/**
+	 * enable() - Enable cache
+	 *
+	 * @dev:	Device to check (UCLASS_CACHE)
+	 * @return 0 if OK, -ve on error
+	 */
+	int (*enable)(struct udevice *dev);
 
-void cache_flush(void)
-{
-	invalidate_icache_all();
-	flush_dcache_all();
-}
+	/**
+	 * disable() - Flush and disable cache
+	 *
+	 * @dev:	Device to check (UCLASS_CACHE)
+	 * @return 0 if OK, -ve on error
+	 */
+	int (*disable)(struct udevice *dev);
+};
 
-void flush_cache(unsigned long addr, unsigned long size)
-{
-	invalidate_icache_range(addr, addr + size);
-	flush_dcache_range(addr, addr + size);
-}
+#define cache_get_ops(dev)	((struct cache_ops *)(dev)->driver->ops)
 
-__weak void icache_enable(void)
-{
-}
+/**
+ * cache_get_info() - Get information about a cache controller
+ *
+ * @dev:	Device to check (UCLASS_CACHE)
+ * @info:	Returns cache info
+ * Return: 0 if OK, -ve on error
+ */
+int cache_get_info(struct udevice *dev, struct cache_info *info);
 
-__weak void icache_disable(void)
-{
-}
+/**
+ * cache_enable() - Enable cache
+ *
+ * @dev:	Device to check (UCLASS_CACHE)
+ * Return: 0 if OK, -ve on error
+ */
+int cache_enable(struct udevice *dev);
 
-__weak int icache_status(void)
-{
-	return 0;
-}
-
-__weak void dcache_enable(void)
-{
-}
-
-__weak void dcache_disable(void)
-{
-}
-
-__weak int dcache_status(void)
-{
-	return 0;
-}
-
-__weak void enable_caches(void)
-{
-}
+/**
+ * cache_disable() - Flush and disable cache
+ *
+ * @dev:	Device to check (UCLASS_CACHE)
+ * Return: 0 if OK, -ve on error
+ */
+int cache_disable(struct udevice *dev);
+#endif
