@@ -15,7 +15,7 @@
 #include <wdt.h>
 #include <asm/io.h>
 #include <clk.h>
-
+#include <dm/device_compat.h>
 
 struct lsmips_wdt_priv {
 	void __iomem *base;
