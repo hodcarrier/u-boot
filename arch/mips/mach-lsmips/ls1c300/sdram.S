@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
 /*
- * Copyright (C) 2020-2022 Du Huanpeng <dhu@hodcarrier.org>
+ * Copyright (C) 2020-2023 Du Huanpeng <dhu@hodcarrier.org>
  */
 
 #include <config.h>
@@ -88,7 +88,6 @@ LEAF(ls1c300_sdram_init)
 	sw	t2, SD_CONFIGHI (t0)
 	sync
 #endif
-	li	v0, SZ_64M
 	jr	ra
 	 nop
 END(ls1c300_sdram_init)
