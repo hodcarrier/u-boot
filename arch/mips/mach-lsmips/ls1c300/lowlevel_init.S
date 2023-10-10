@@ -94,7 +94,6 @@ LEAF(ls1c300_pll_init)
 	ori	t2, 1<<CPU_SEL
 	sw	t2, CLK_DIV_PARAM (t0)
 #endif
-	li	v0, 264000000
 	jr	ra
 	 nop
 END(ls1c300_pll_init)
