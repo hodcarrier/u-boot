@@ -5,7 +5,5 @@
 
 /dts-v1/;
 
-#include "binman.dtsi"
-
 / {
 };
