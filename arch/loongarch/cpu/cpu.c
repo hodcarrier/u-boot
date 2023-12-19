@@ -15,6 +15,10 @@
 #include <dm/uclass-internal.h>
 #include <linux/bitops.h>
 
+#include <common.h>
+#include <irq_func.h>
+#include <asm/cache.h>
+
 /*
  * The variables here must be stored in the data section since they are used
  * before the bss section is available.
@@ -171,4 +175,19 @@ int arch_early_init_r(void)
  */
 __weak void harts_early_init(void)
 {
+}
+
+/*
+ * cleanup_before_linux() is called just before we call linux
+ * it prepares the processor for linux
+ *
+ * we disable interrupt and caches.
+ */
+int cleanup_before_linux(void)
+{
+	disable_interrupts();
+
+	cache_flush();
+
+	return 0;
 }
